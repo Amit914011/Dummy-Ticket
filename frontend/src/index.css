@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer utilities{
+  .bg{
+    background-image: linear-gradient(to right, rgb(198, 255, 221), rgba(251, 216, 134, 0.781), rgba(247, 121, 125, 0.753));
+  }
+  .text{
+    color: #32B57A;
+  }
+  .background{
+    background-color:#32B57A ;
+  }
+}
