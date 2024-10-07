@@ -34,7 +34,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         {/* Logo Section */}
         <div className="text-2xl font-bold black uppercase ">
-         <Link to="" > Dummy Ticket</Link>
+         <a href="" > Dummy Ticket</a>
         </div>
 
         {/* Links Section */}

@@ -181,12 +181,12 @@ export default function Footer() {
       <ul className=" flex justify-center items-center flex-wrap">
         {menuItems.map((item, index) => (
           <li key={index}>
-            <Link 
-              to={item.link} 
+            <a 
+              href={item.link} 
               className="block text-gray-800 transition duration-300 ease-in-out p-2 rounded"
             ><CiCircleCheck className='text-2xl inline mr-2 text-[#32B57A]' />
               {item.name}
-            </Link>
+            </a>
           </li>
         ))}
       </ul>
