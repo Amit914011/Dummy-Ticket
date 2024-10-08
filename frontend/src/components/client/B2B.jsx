@@ -27,6 +27,9 @@ const B2B = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,16 +57,66 @@ const B2B = () => {
     if (!formData.yearsInBusiness) validationErrors.yearsInBusiness = 'Years in Business is required';
     if (!formData.monthlyBookingVolume) validationErrors.monthlyBookingVolume = 'Monthly Booking Volume is required';
 
-    setErrors(validationErrors);
-    return Object.keys(validationErrors).length === 0;
+    return validationErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      console.log('Form Data:', formData);
-      // Here you can handle form submission, like sending to an API
-      alert('Form submitted successfully!');
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setIsSubmitting(true); // Show loading
+
+    try {
+      const formDataToSubmit = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSubmit.append(key, value);
+      });
+
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbwiqRmbBgCQWevW4jpH2MbwDsNKELR2iGtHr-M2jo7_OnbEUVhlG03fNOSIPsWcyn5D/exec';
+
+      await fetch(scriptUrl, {
+        method: 'POST',
+        body: formDataToSubmit,
+        mode: 'no-cors',
+      });
+
+      // Reset form and handle success
+      setFormData({
+        title: '',
+        firstName: '',
+        lastName: '',
+        countryCode: '+91',
+        mobile: '',
+        email: '',
+        residentialAddress: '',
+        pinCode: '',
+        country: '',
+        agencyName: '',
+        pan: '',
+        agencyMobile: '',
+        agencyAddress1: '',
+        agencyAddress2: '',
+        agencyPinCode: '',
+        agencyCountry: '',
+        city: '',
+        state: '',
+        fax: '',
+        businessType: '',
+        yearsInBusiness: '',
+        monthlyBookingVolume: '',
+      });
+      setErrors({});
+      setSuccessMessage('Message sent successfully!');
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('Failed to send message. Please try again.');
+      setSuccessMessage('');
+    } finally {
+      setIsSubmitting(false); // End loading state
     }
   };
 
@@ -181,18 +234,7 @@ const B2B = () => {
             {errors.pinCode && <p className="text-red-500 text-sm">{errors.pinCode}</p>}
           </div>
 
-          {/* Country */}
-          <div>
-            <label className="block font-medium">Country</label>
-            <select name="country" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
-              <option value="" disabled selected>Select country name</option>
-              <option value="India">India</option>
-              <option value="USA">USA</option>
-              <option value="UK">UK</option>
-            </select>
-          </div>
-
-          <h2 className="text-xl font-semibold mt-6">Agency Details</h2>
+          <h2 className="text-xl font-semibold">Agency Details</h2>
 
           {/* Agency Name */}
           <div>
@@ -217,7 +259,7 @@ const B2B = () => {
               value={formData.pan}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder='PAN Number'
+              placeholder='PAN'
             />
             {errors.pan && <p className="text-red-500 text-sm">{errors.pan}</p>}
           </div>
@@ -277,17 +319,6 @@ const B2B = () => {
             {errors.agencyPinCode && <p className="text-red-500 text-sm">{errors.agencyPinCode}</p>}
           </div>
 
-          {/* Agency Country */}
-          <div>
-            <label className="block font-medium">Agency Country</label>
-            <select name="agencyCountry" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
-              <option value="" disabled selected>Select country name</option>
-              <option value="India">India</option>
-              <option value="USA">USA</option>
-              <option value="UK">UK</option>
-            </select>
-          </div>
-
           {/* City */}
           <div>
             <label className="block font-medium">City</label>
@@ -311,7 +342,7 @@ const B2B = () => {
               value={formData.state}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder='State'
+              placeholder='State/Province'
             />
             {errors.state && <p className="text-red-500 text-sm">{errors.state}</p>}
           </div>
@@ -329,17 +360,18 @@ const B2B = () => {
             />
           </div>
 
+          <h2 className="text-xl font-semibold">Business Details</h2>
+
           {/* Business Type */}
           <div>
             <label className="block font-medium">Business Type</label>
-            <input
-              type="text"
-              name="businessType"
-              value={formData.businessType}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder='Business Type'
-            />
+            <select name="businessType" onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+              <option value="" disabled selected>Select</option>
+              <option value="Travel Agency">Travel Agency</option>
+              <option value="Corporate Agency">Corporate Agency</option>
+              <option value="Event Management">Event Management</option>
+              <option value="Other">Other</option>
+            </select>
             {errors.businessType && <p className="text-red-500 text-sm">{errors.businessType}</p>}
           </div>
 
@@ -371,14 +403,12 @@ const B2B = () => {
             {errors.monthlyBookingVolume && <p className="text-red-500 text-sm">{errors.monthlyBookingVolume}</p>}
           </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-center mt-4">
-            <button
-              type="submit"
-              className="px-4 py-2 w-full text-xl background text-white rounded-md  focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Submit
+          <div className="flex flex-col items-center">
+            <button type="submit" className="bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
+            {successMessage && <p className="text-green-500 text-sm mt-4">{successMessage}</p>}
+            {errorMessage && <p className="text-red-500 text-sm mt-4">{errorMessage}</p>}
           </div>
         </form>
       </div>

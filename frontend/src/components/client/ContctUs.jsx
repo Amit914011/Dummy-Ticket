@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
 import { FaPhone, FaEnvelope, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import contact from '../../assets/contactus.png';
 
@@ -41,24 +41,41 @@ const ContactUs = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validate();
+    const validationErrors = validate(); // Call validate
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    setIsSubmitting(true);
+    setIsSubmitting(true); // Show loading
+
     try {
-      // Send data to your API endpoint
-      const response = await axios.post('https://api.example.com/contact', formData);
-      console.log('Form submitted successfully:', response.data);
-      // Reset form after successful submission
-      setFormData({ name: '', email: '', mobile: '', message: '' });
+      const formDataToSubmit = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSubmit.append(key, value);
+      });
+
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbxDqN-T0yv5KBlGW-4spxpw_Jm9sPYECdmkVH3D-4kDyRqxkm8HxRPQmneOHoOl-SZF/exec';
+
+      await fetch(scriptUrl, {
+        method: 'POST',
+        body: formDataToSubmit,
+        mode: 'no-cors',
+      });
+
+      // Reset form and handle success
+      setFormData({
+        name: '',
+        email: '',
+        mobile: '',
+        message: '',
+      });
       setErrors({});
+      alert('Message sent successfully!');
     } catch (error) {
-      console.error('Form submission error:', error);
+      alert('Failed to send message. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // End loading state
     }
   };
 

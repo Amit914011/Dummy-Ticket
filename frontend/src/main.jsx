@@ -14,10 +14,16 @@ import BlogPage from './components/client/BlogePage.jsx'
 import Faqs from './components/client/Faqs.jsx'
 import B2B from './components/client/B2B.jsx'
 import Login from './components/client/Login.jsx'
+import AdminLayout from './AdminLayout.jsx'
+import DashBoard from './components/admin/DashBoard.jsx'
+import B2BAdmin from './components/admin/B2BAdmin.jsx'
+import B2CAdmin from './components/admin/B2CAdmin.jsx'
+
 
 
 let router=createBrowserRouter(
   createRoutesFromElements(
+   <>
     <Route path='/' element={<App/>}>
     <Route path='' element={<Hero/>}/>
     <Route path='/contactus' element={<ContactUs/>}/>
@@ -32,6 +38,12 @@ let router=createBrowserRouter(
     <Route path='/login' element={<Login/>}/>
 
     </Route>
+    <Route path='/admin' element={<AdminLayout/>}>
+    <Route path='' element={<DashBoard/>}/>
+    <Route path='/admin/b2badmin' element={<B2BAdmin/>}/>
+    <Route path='/admin/b2cadmin' element={<B2CAdmin/>}/>
+    </Route>
+   </>
   )
 )
 
