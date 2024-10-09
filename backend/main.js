@@ -2,7 +2,7 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db=require('./dbconfig')
+const db=require('./dbConfig.js')
 const loginRoute= require('./route/route')
 
 const app = express();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-
+import { FaWhatsapp } from "react-icons/fa";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -52,9 +52,7 @@ const Navbar = () => {
 
         {/* Login Button Section */}
         <div className="hidden md:flex">
-          <button className="bg-[#32B57A]  text-xl text-white px-4 py-2 rounded-md hover:bg-[#32B57A] transition duration-300">
-            <Link to='/login'>Login</Link>
-          </button>
+        <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-2xl text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/> +91 6239484624</a>
         </div>
 
         {/* Hamburger Menu */}
@@ -93,14 +91,8 @@ const Navbar = () => {
           >
             FAQs
           </Link>
-          <Link
-            to="/login"
-            className="block py-2 text-white text-xl rounded-lg transition duration-300 background text-center "
-            onClick={() => setIsOpen(false)}
-          >
-            Login
-          </Link>
           
+          <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-2xl text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/>6239484624</a>
         </div>
       )}
     </nav>
