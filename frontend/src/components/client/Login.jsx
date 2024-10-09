@@ -1,173 +1,110 @@
-import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'react-icons/ai'; // Import icons
+import axios from 'axios'; // Import axios
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and sign up
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-  });
-  const [errors, setErrors] = useState({});
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
-  // Handle input change
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Validate form
-  const validate = () => {
-    let validationErrors = {};
-
-    if (!formData.email) {
-      validationErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      validationErrors.email = 'Email address is invalid';
-    }
-
-    if (!formData.password) {
-      validationErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      validationErrors.password = 'Password must be at least 6 characters';
-    }
-
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      validationErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    if (!isLogin && !formData.name) {
-      validationErrors.name = 'Name is required';
-    }
-
-    setErrors(validationErrors);
-    return Object.keys(validationErrors).length === 0;
-  };
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      try {
-        if (isLogin) {
-          // Handle login submission
-          const response = await axios.post('https://actl.co.in/shop/userLogin', {
-            email: formData.email,
-            password: formData.password,
-          });
 
-          if (response.data.success) {
-            // Assuming success returns a token or user data
-            console.log('Login successful:', response.data);
-            navigate('/');
-          } else {
-            alert("You entered the wrong details");
-          }
-        } else {
-          // Handle signup submission
-          await axios.post('https://actl.co.in/shop/userSave', formData);
-          console.log('Sign up data:', formData);
-          setIsLogin(true);
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      // Sending POST request to the API with username and password
+      const response = await axios.post('http://localhost:3000/api/login', {
+        username,
+        password,
+      });
+
+      // Handle success response
+      if (response.data) {
+        navigate('/admin/'); // Navigate to /admin after successful login
+      } else {
+        setErrorMessage('Invalid credentials');
       }
+    } catch (error) {
+      // Handle error
+      setErrorMessage('Login failed. Please try again.');
+      console.error('Error logging in:', error);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen py-24 bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md mt-20 mb-2">
-        <h2 className="text-3xl font-bold mb-6 text-center text-black ">
-          {isLogin ? 'Sign In' : 'Sign Up'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name field for Sign Up */}
-          {!isLogin && (
-            <div>
-              <label className="block text-black font-medium">Name</label>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
+        {/* Logo Section */}
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-bold uppercase text-[#32B57A]">Login</h1>
+        </div>
+
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="mb-4 text-red-500 text-center">
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit}>
+          {/* Username Field */}
+          <div className="mb-4 relative">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Username or Email Address
+            </label>
+            <div className="relative">
+              <AiOutlineUser className="absolute left-3 top-2/4 transform -translate-y-1/2 text-[#32B57A] font-bold" size={20} />
               <input
                 type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#32B57A]"
-                placeholder="Enter your name"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
+                placeholder="Enter your username or email"
+                required
               />
-              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
-          )}
-
-          {/* Email field */}
-          <div>
-            <label className="block text-black font-medium">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#32B57A]"
-              placeholder="Enter your email"
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
 
-          {/* Password field */}
-          <div>
-            <label className="block text-black font-medium">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#32B57A]"
-              placeholder="Enter your password"
-            />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
-          </div>
-
-          {/* Confirm Password field for Sign Up */}
-          {!isLogin && (
-            <div>
-              <label className="block text-black font-medium">Confirm Password</label>
+          {/* Password Field */}
+          <div className="mb-6 relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative">
+              <AiOutlineLock className="absolute left-3 top-2/4 transform -translate-y-1/2 text-[#32B57A]" size={20} />
               <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#32B57A]"
-                placeholder="Confirm your password"
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
+                placeholder="Enter your password"
+                required
               />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-[#32B57A]"
+              >
+                {showPassword ? <AiFillEyeInvisible size={20} className='text-[#32B57A]' /> : <AiFillEye size={20} className='text-[#32B57A]'/>}
+              </button>
             </div>
-          )}
+          </div>
 
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full background text-white py-3 rounded-md  transition duration-200"
-          >
-            {isLogin ? 'Sign In' : 'Sign Up'}
-          </button>
-        </form>
-
-        {/* Toggle between Sign In and Sign Up */}
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
-            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+          {/* Submit Button */}
+          <div className="mb-4">
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-black hover:underline"
+              type="submit"
+              className="w-full bg-[#32B57A] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#32B57A] focus:outline-none focus:ring-2 focus:ring-[#32B57A] focus:ring-offset-2"
             >
-              {isLogin ? 'Sign Up' : 'Sign In'}
+              Log In
             </button>
-          </p>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

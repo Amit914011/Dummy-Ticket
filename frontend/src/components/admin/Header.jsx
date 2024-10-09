@@ -1,8 +1,9 @@
 import React from "react";
+import { FaRegUserCircle } from "react-icons/fa";
 
 const Header = () => {
   const user = {
-    name: "John Doe",
+    name: "Admin Login",
     profileImage: "https://via.placeholder.com/40" // Replace with actual image URL
   };
 
@@ -12,11 +13,7 @@ const Header = () => {
 
       {/* User Info Section */}
       <div className="flex items-center space-x-3">
-        <img
-          src={user.profileImage}
-          alt="User"
-          className="w-10 h-10 rounded-full"
-        />
+      <FaRegUserCircle className="text-3xl"/>
         <span className="text-lg">{user.name}</span>
       </div>
     </header>

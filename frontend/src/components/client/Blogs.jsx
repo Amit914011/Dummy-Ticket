@@ -11,22 +11,22 @@ import blog3 from '../../assets/blog3.png';
 const blogs = [
   {
     id: 1,
-    title: 'How to Learn React for Beginners',
-    content: 'React is a popular JavaScript library for building user interfaces. In this guide, we’ll go through the basics of React and how to get started...',
+    title: 'Dummy Ticket : Understanding Their Purpose and Usage',
+    content: 'The term “dummy ticket” can make people curious. It stands for a real airline ticket. This helps meet visa or travel proof needs without actually booking a flight. A dummy ticket looks like a real one, with details like the traveler’s name and flight info...',
     imageUrl: blog1,
     link: '/blogs/react-for-beginners',
   },
   {
     id: 2,
-    title: 'Understanding Tailwind CSS for Fast Prototyping',
-    content: 'Tailwind CSS is a utility-first CSS framework packed with classes like flex, pt-4, text-center, and rotate-90 that can be composed...',
+    title: 'How can I make dummy flight ticket online?',
+    content: 'In today’s world of travel planning, the essentials of having a confirmed flight ticket for visa applications or Travel itinerary requirements is disputed...',
     imageUrl: blog2,
     link: '/blogs/tailwind-css-for-fast-prototyping',
   },
   {
     id: 3,
-    title: 'Why JavaScript is the Future of Web Development',
-    content: 'JavaScript has grown to be one of the most popular programming languages in the world. Its versatility and widespread usage...',
+    title: 'Dummy Hotel Booking for Visa Application | Dummy-Tickets',
+    content: 'A dummy hotel booking for a visa application is a reservation made at a hotel for the purpose of obtaining a visa. This type of booking is typically made without the intention of actually staying at the hotel...',
     imageUrl: blog3,
     link: '/blogs/javascript-future',
   },
@@ -35,18 +35,18 @@ const blogs = [
 const latestBlogs = [
   {
     id: 1,
-    title: 'Learn JavaScript in 2024',
-    link: '/blogs/learn-javascript',
+    title: 'Dummy Ticket : Understanding Their Purpose and Usage',
+    link: '/blogpage/1',
   },
   {
     id: 2,
-    title: 'Understanding Flexbox in CSS',
-    link: '/blogs/flexbox-guide',
+    title: 'How can I make dummy flight ticket online?',
+    link: '/blogpage/2',
   },
   {
     id: 3,
-    title: 'How to Use React Hooks',
-    link: '/blogs/react-hooks',
+    title: 'Dummy Hotel Booking for Visa Application | Dummy-Tickets',
+    link: '/blogpage/3',
   },
 ];
 

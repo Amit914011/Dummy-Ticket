@@ -2,12 +2,24 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const db=require('./dbconfig')
+const loginRoute= require('./route/route')
 
 const app = express();
 const PORT = 3000;
-
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}))
 app.use(cors());
+app.use(express.json())
+
+// Data base Connection
+db.connect((err,result)=>{
+  if(err) throw err
+  else{
+      console.log("DataBase connected")
+  }
+})
+
 
 // Route to send OTP via email
 app.post('/send-sms', async (req, res) => {
@@ -47,6 +59,8 @@ app.post('/send-sms', async (req, res) => {
     res.status(500).send('Error sending email');
   }
 });
+
+app.use('/api',loginRoute)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
