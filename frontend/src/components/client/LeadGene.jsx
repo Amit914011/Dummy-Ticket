@@ -14,6 +14,7 @@ const LeadGene = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [activeButton, setActiveButton] = useState(''); // Track which button is clicked
@@ -39,58 +40,85 @@ const LeadGene = () => {
     return formErrors;
   };
 
-  const handlePayment = async (type) => {
-    const amount = type === 'B2C' ? 50000 : 100000; // Amount in paise (₹500 for B2C, ₹1000 for B2B)
-
-    // Call the Razorpay payment gateway popup
-    const options = {
-      key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
-      amount: amount, // Amount in paise (100000 paise = Rs 1000)
-      currency: 'INR',
-      name: formData.name,
-      description: `Dummy Ticket Purchase (${type})`,
-      image: 'https://your-logo-url.com/logo.png', // Add your company logo URL here
-      handler: function (response) {
-        // Handle the payment response
-        setSuccessMessage(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
-      },
-      prefill: {
-        name: formData.name,
-        email: formData.email,
-        contact: formData.number,
-      },
-      theme: {
-        color: '#32B57A',
-      },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  };
-
   const handleSubmit = async (e, type) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
+      setLoading(true);
       setErrors({});
       setActiveButton(type); // Set which button is clicked
 
       try {
-        // Here you can handle form submission (if required) and then open the payment gateway
-        await handlePayment(type); // Open the Razorpay payment popup
+        const formDataToSubmit = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+          formDataToSubmit.append(key, value); 
+        });
+        
+        formDataToSubmit.append('type', type);
+
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycby3Mv8NHAgFH1cLuuJQ2Xm-pBAH_hg3nvIB1Apxd7kwRT7shdl1_5hF1gBPQtaBrmZ5Lw/exec';
+        
+        await fetch(scriptUrl, {
+          method: 'POST',
+          body: formDataToSubmit,
+          mode: 'no-cors', // Note: no-cors will not return any response from the server
+        });
+
+        // Sending SMS
+        if (formData.email && formData.name) {
+          const response = await fetch('http://localhost:3000/send-sms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              email: formData.email, 
+              name: formData.name, 
+              number: formData.number, 
+              from: formData.from, 
+              to: formData.to, 
+              departureDate: formData.departureDate, 
+              adults: formData.adults, 
+              children: formData.children, 
+              travelClass: formData.travelClass,
+              type 
+            }),
+          });
+
+          if (response.ok) {
+            setSuccessMessage('Your data has been submitted successfully.');
+          } else {
+            throw new Error('Error sending confirmation email.');
+          }
+        } else {
+          throw new Error('Please enter both a valid email address and name.');
+        }
+
+        // Reset form on success
+        setFormData({
+          name: '',
+          number: '',
+          email: '',
+          from: '',
+          to: '',
+          departureDate: '',
+          adults: '',
+          children: '',
+          travelClass: '',
+        });
+
       } catch (err) {
         setErrorMessage(err.message || 'There was an error submitting the form. Please try again.');
       } finally {
+        setLoading(false);
         setActiveButton(''); // Reset active button after the request
       }
     }
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-4">
-      <div className='w-[100%] mb-2 flex justify-center items-center bg-gray-200 rounded'>
+    <div className="flex flex-col justify-center items-center min-h-screen p-4">
+      <div className='w-[96%] mb-2 flex justify-center items-center bg-gray-200 rounded'>
         <button
           className={`mr-4 p-2 px-7 rounded ${activeButton === 'B2C' ? 'bg-[#32B57A] text-white' : 'bg-white'}`}
           onClick={() => setActiveButton('B2C')}
@@ -105,7 +133,7 @@ const LeadGene = () => {
         </button>
       </div>
 
-      <form className="bg-white shadow-md rounded px-8 py-6 w-full">
+      <form className="bg-white shadow-md rounded px-8 py-6 w-full max-w-xl">
         <h2 className="text-2xl font-bold mb-4">Get your Dummy</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Name */}
@@ -220,36 +248,36 @@ const LeadGene = () => {
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Class</option>
+              <option value="">Select class</option>
               <option value="Economy">Economy</option>
               <option value="Business">Business</option>
-              <option value="First Class">First Class</option>
+              <option value="First">First</option>
             </select>
             {errors.travelClass && <p className="text-red-500 text-sm">{errors.travelClass}</p>}
           </div>
         </div>
 
-        {/* Submit buttons */}
-        <div className="flex justify-center mt-4">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-4"
-            onClick={(e) => handleSubmit(e, 'B2C')}
-          >
-            Pay ₹500 for B2C
-          </button>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded-md"
-            onClick={(e) => handleSubmit(e, 'B2B')}
-          >
-            Pay ₹1000 for B2B
-          </button>
+        <div className="mt-5">
+          {/* Conditionally rendering content based on which button is clicked */}
+          {activeButton === 'B2C' && (
+            <div>
+              <button  onClick={(e) => handleSubmit(e, activeButton)} className="bg-green-500 rounded text-white p-2">Buy Dummy Ticket B2C</button>
+            </div>
+          )}
+
+          {activeButton === 'B2B' && (
+            <div>
+              <button  onClick={(e) => handleSubmit(e, activeButton)} className="bg-green-500 rounded text-white p-2">Buy Dummy Ticket B2B</button>
+            </div>
+          )}
         </div>
 
-        {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
-        {errorMessage && <p className="text-red-500 text-center mt-4">{errorMessage}</p>}
+        {/* Success/Error Message */}
+        {successMessage && <p className="text-green-500 text-sm mt-4">{successMessage}</p>}
+        {errorMessage && <p className="text-red-500 text-sm mt-4">{errorMessage}</p>}
       </form>
     </div>
   );
 };
 
-export default LeadGene;
+export default LeadGene;  
