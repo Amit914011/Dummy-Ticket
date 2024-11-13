@@ -33,7 +33,8 @@ import { FaChalkboardUser } from "react-icons/fa6";
 import { AiFillLike } from "react-icons/ai";
 import { FaPlay, FaTimes } from 'react-icons/fa'; // Importing icons
 import { PiPhoneCall } from "react-icons/pi";
-import LeadGene from "./LeadGene";
+import Form from "./Form";
+
 
 
 
@@ -256,7 +257,8 @@ const Hero = () => {
 
         {/* Right Column: Tab Switcher */}
         <div className="w-full md:w-1/2 mt-8 md:mt-10">
-          <LeadGene/>
+          {/* <LeadGene/> */}
+          <Form/>
         </div>
 
       </section>

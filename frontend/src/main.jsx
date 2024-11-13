@@ -19,6 +19,7 @@ import DashBoard from './components/admin/DashBoard.jsx'
 import B2BAdmin from './components/admin/B2BAdmin.jsx'
 import B2CAdmin from './components/admin/B2CAdmin.jsx'
 import Protected from './context/Protected.jsx'
+import CustomerDetails from './components/client/CustomerDetails.jsx'
 
 
 
@@ -36,6 +37,7 @@ let router=createBrowserRouter(
     <Route path='/blogpage/:id' element={<BlogPage/>}/>
     <Route path='faqs' element={<Faqs/>}/>
     <Route path='/b2b' element={<B2B/>}/>
+    <Route path='/customerdetails' element={<CustomerDetails/>}/>
 
     </Route>
     <Route path='/admin' element={<AdminLayout/>}>
