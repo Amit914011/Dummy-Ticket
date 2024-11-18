@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios'
 
 export default function Form() {
   const [selectedOption, setSelectedOption] = useState("Flight");
@@ -72,21 +72,59 @@ export default function Form() {
     return Object.keys(formErrors).length === 0; // If no errors, form is valid
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
+  //   // Validate form data
+  //   if (!validateForm()) {
+  //   //   alert("Please fill all required fields correctly.");
+  //     return;
+  //   }
+
+  //   // Form is valid, now handle form submission
+  //   let data={ selectedOption, flightType, routes, hotels }
+  //   const response = await axios.post('http://localhost:6666/api/saveTravelData', data, {
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   });
+  //   console.log('Form Submitted:',data );
+    
+  //   // Redirect to the next page (for example, /success)
+  //   navigate('/customerdetails'); // Adjust the route as per your application
+  // };
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
     // Validate form data
     if (!validateForm()) {
-    //   alert("Please fill all required fields correctly.");
+      // Optionally show a message or handle the invalid form scenario
+      alert("Please fill all required fields correctly.");
       return;
     }
-
-    // Form is valid, now handle form submission
-    let data={ selectedOption, flightType, routes, hotels }
-    console.log('Form Submitted:',data );
-    
-    // Redirect to the next page (for example, /success)
-    navigate('/customerdetails'); // Adjust the route as per your application
+  
+    // Prepare the data object to be sent
+    const data = { selectedOption, flightType, routes, hotels };
+  
+    try {
+      // Use POST request to send data
+      const response = await axios.post('http://localhost:3500/api/saveTravelData', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      // Log the form data after successful submission
+      console.log('Form Submitted:', data);
+  
+      // Redirect to the next page (for example, /customerdetails)
+      navigate('/customerdetails'); // Adjust the route as per your application
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('There was an error submitting the form!');
+    }
   };
 
   return (
@@ -156,7 +194,7 @@ export default function Form() {
         </div>
       )}
 
-      <form className="w-full space-y-6 text-white" onSubmit={handleSubmit}>
+      <form className="w-full space-y-6 text-[#32B57A]" onSubmit={handleSubmit}>
         {(selectedOption === "Flight" || selectedOption === "Both") && (
           <>
             {routes.map((route, index) => (
@@ -178,7 +216,7 @@ export default function Form() {
                     id={`from-${index}`}
                     value={route.from}
                     onChange={(e) => handleRouteChange(index, 'from', e.target.value)}
-                    className={`w-full px-4 py-2 border ${errors[`route${index}`] ? 'border-red-500' : 'border-gray-500'} rounded bg-white text-white focus:outline-none focus:border-[#32B57A]`}
+                    className={`w-full px-4 py-2 border ${errors[`route${index}`] ? 'border-red-500' : 'border-gray-500'} rounded bg-white text-black focus:outline-none focus:border-[#32B57A]`}
                   />
                   {errors[`route${index}`] && <p className="text-red-500 text-sm">{errors[`route${index}`]}</p>}
                 </div>
@@ -189,7 +227,7 @@ export default function Form() {
                     id={`to-${index}`}
                     value={route.to}
                     onChange={(e) => handleRouteChange(index, 'to', e.target.value)}
-                    className={`w-full px-4 py-2 border ${errors[`route${index}`] ? 'border-red-500' : 'border-gray-500'} rounded  text-white focus:outline-none focus:border-[#32B57A]`}
+                    className={`w-full px-4 py-2 border ${errors[`route${index}`] ? 'border-red-500' : 'border-gray-500'} rounded  text-black focus:outline-none focus:border-[#32B57A]`}
                   />
                   {errors[`route${index}`] && <p className="text-red-500 text-sm">{errors[`route${index}`]}</p>}
                 </div>
@@ -257,7 +295,7 @@ export default function Form() {
                     id={`hotel-city-${index}`}
                     value={hotel.city}
                     onChange={(e) => handleHotelChange(index, 'city', e.target.value)}
-                    className={`w-full px-4 py-2 border ${errors[`hotel${index}`] ? 'border-red-500' : 'border-gray-500'} rounded  text-white focus:outline-none focus:border-[#32B57A]`}
+                    className={`w-full px-4 py-2 border ${errors[`hotel${index}`] ? 'border-red-500' : 'border-gray-500'} rounded  text-black focus:outline-none focus:border-[#32B57A]`}
                   />
                   {errors[`hotel${index}`] && <p className="text-red-500 text-sm">{errors[`hotel${index}`]}</p>}
                 </div>

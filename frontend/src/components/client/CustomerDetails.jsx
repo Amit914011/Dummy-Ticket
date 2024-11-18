@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export default function CustomerDetails() {
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -52,13 +53,13 @@ export default function CustomerDetails() {
 
     // Validate passenger details
     passengers.forEach((passenger, index) => {
-      if (!passenger.title)
-        newErrors[`title-${index}`] = "Title is required.";
+      if (!passenger.title) newErrors[`title-${index}`] = "Title is required.";
       if (!passenger.firstName)
         newErrors[`firstName-${index}`] = "First name is required.";
       if (!passenger.lastName)
         newErrors[`lastName-${index}`] = "Last name is required.";
-      if (!passenger.dob) newErrors[`dob-${index}`] = "Date of birth is required.";
+      if (!passenger.dob)
+        newErrors[`dob-${index}`] = "Date of birth is required.";
       if (!passenger.nationality)
         newErrors[`nationality-${index}`] = "Nationality is required.";
     });
@@ -68,7 +69,6 @@ export default function CustomerDetails() {
     // Return true if no errors
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleSubmit1 = (e) => {
     e.preventDefault();
@@ -90,30 +90,39 @@ export default function CustomerDetails() {
     }
   };
 
-
-
   // next form data
 
   const [formData, setFormData] = useState({
-    receivingtime: '',
-    purpose: '',
-    message: ''
+    receivingtime: "",
+    purpose: "",
+    message: "",
   });
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
     console.log(formData);
   };
-  
+
+  // Get Data API Here
+  let [data, setData] = useState([]);
+
+  async function getData() {
+    let result = await axios.get("http://localhost:3500/api/getTravelData");
+    setData(result);
+  }
+  console.log(data.data);
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <div className="mt-[150px] px-5 md:px-20">
@@ -122,27 +131,38 @@ export default function CustomerDetails() {
       </h1>
       <div className="w-full flex flex-col lg:flex-row gap-5 mt-5">
         <div className="lg:w-[70%]">
-          
           {/* Tabs */}
           <div className="flex">
-          
-            <div
-
-              className={` px-8 bg-[#32B57A] py-5 rounded mr-2 text-white`}
-            >
-              <span className="py-[10px] px-[20px] rounded-full bg-white text-[#32B57A] font-bold text-2xl">1</span> <span className="text-xl hidden lg:inline">Route Details</span>
+            <div className={` px-8 bg-[#32B57A] py-5 rounded mr-2 text-white`}>
+              <span className="py-[10px] px-[20px] rounded-full bg-white text-[#32B57A] font-bold text-2xl">
+                1
+              </span>{" "}
+              <span className="text-xl hidden lg:inline">Route Details</span>
             </div>
             <button
               onClick={() => setActiveTab("passenger")}
-              className={`py-2 px-8  bg-[#32B57A]  rounded mr-2 text-white ${activeTab === "passenger" ? "border-b-2 border-[#32B57A]" : ""}`}
+              className={`py-2 px-8  bg-[#32B57A]  rounded mr-2 text-white ${
+                activeTab === "passenger" ? "border-b-2 border-[#32B57A]" : ""
+              }`}
             >
-              <span className="py-[10px] px-[20px] rounded-full bg-white text-[#32B57A] font-bold text-2xl">2</span> <span className="text-xl hidden lg:inline">Passenger Details</span>
+              <span className="py-[10px] px-[20px] rounded-full bg-white text-[#32B57A] font-bold text-2xl">
+                2
+              </span>{" "}
+              <span className="text-xl hidden lg:inline">
+                Passenger Details
+              </span>
             </button>
             <button
-              className={`py-2 px-8 text-white  bg-[#32B57A]  rounded ${activeTab === "additional" ? "border-b-2 border-[#32B57A]" : ""}`}
+              className={`py-2 px-8 text-white  bg-[#32B57A]  rounded ${
+                activeTab === "additional" ? "border-b-2 border-[#32B57A]" : ""
+              }`}
             >
-              <span className="py-[10px] px-[19px] mr-1 rounded-full bg-white text-[#32B57A] font-bold text-2xl">3</span>
-              <span className="text-xl hidden lg:inline">Additional Details</span>
+              <span className="py-[10px] px-[19px] mr-1 rounded-full bg-white text-[#32B57A] font-bold text-2xl">
+                3
+              </span>
+              <span className="text-xl hidden lg:inline">
+                Additional Details
+              </span>
             </button>
           </div>
 
@@ -166,7 +186,9 @@ export default function CustomerDetails() {
                     ))}
                   </select>
                   {errors.selectedCountry && (
-                    <span className="text-red-500">{errors.selectedCountry}</span>
+                    <span className="text-red-500">
+                      {errors.selectedCountry}
+                    </span>
                   )}
 
                   <input
@@ -200,7 +222,10 @@ export default function CustomerDetails() {
 
                 <div className="mt-6">
                   {passengers.map((passenger, index) => (
-                    <div key={passenger.id} className="mb-5 border p-4 rounded-md relative">
+                    <div
+                      key={passenger.id}
+                      className="mb-5 border p-4 rounded-md relative"
+                    >
                       <h1 className="text-lg font-semibold">
                         Passenger {passenger.id}
                       </h1>
@@ -217,7 +242,11 @@ export default function CustomerDetails() {
                         <select
                           value={passenger.title}
                           onChange={(e) =>
-                            handleInputChange(passenger.id, "title", e.target.value)
+                            handleInputChange(
+                              passenger.id,
+                              "title",
+                              e.target.value
+                            )
                           }
                           className="w-full sm:w-[80px] p-2 border border-gray-300 rounded-md"
                         >
@@ -227,33 +256,47 @@ export default function CustomerDetails() {
                           <option value="Mrs">Mrs</option>
                         </select>
                         {errors[`title-${index}`] && (
-                          <span className="text-red-500">{errors[`title-${index}`]}</span>
+                          <span className="text-red-500">
+                            {errors[`title-${index}`]}
+                          </span>
                         )}
 
                         <input
                           type="text"
                           value={passenger.firstName}
                           onChange={(e) =>
-                            handleInputChange(passenger.id, "firstName", e.target.value)
+                            handleInputChange(
+                              passenger.id,
+                              "firstName",
+                              e.target.value
+                            )
                           }
                           placeholder="First Name"
                           className="w-full p-2 border border-gray-300 rounded-md"
                         />
                         {errors[`firstName-${index}`] && (
-                          <span className="text-red-500">{errors[`firstName-${index}`]}</span>
+                          <span className="text-red-500">
+                            {errors[`firstName-${index}`]}
+                          </span>
                         )}
 
                         <input
                           type="text"
                           value={passenger.lastName}
                           onChange={(e) =>
-                            handleInputChange(passenger.id, "lastName", e.target.value)
+                            handleInputChange(
+                              passenger.id,
+                              "lastName",
+                              e.target.value
+                            )
                           }
                           placeholder="Last Name"
                           className="w-full p-2 border border-gray-300 rounded-md"
                         />
                         {errors[`lastName-${index}`] && (
-                          <span className="text-red-500">{errors[`lastName-${index}`]}</span>
+                          <span className="text-red-500">
+                            {errors[`lastName-${index}`]}
+                          </span>
                         )}
                       </div>
 
@@ -262,18 +305,28 @@ export default function CustomerDetails() {
                           type="date"
                           value={passenger.dob}
                           onChange={(e) =>
-                            handleInputChange(passenger.id, "dob", e.target.value)
+                            handleInputChange(
+                              passenger.id,
+                              "dob",
+                              e.target.value
+                            )
                           }
                           className="w-full sm:w-[200px] p-2 border border-gray-300 rounded-md"
                         />
                         {errors[`dob-${index}`] && (
-                          <span className="text-red-500">{errors[`dob-${index}`]}</span>
+                          <span className="text-red-500">
+                            {errors[`dob-${index}`]}
+                          </span>
                         )}
 
                         <select
                           value={passenger.nationality}
                           onChange={(e) =>
-                            handleInputChange(passenger.id, "nationality", e.target.value)
+                            handleInputChange(
+                              passenger.id,
+                              "nationality",
+                              e.target.value
+                            )
                           }
                           className="w-full sm:w-[200px] p-2 border border-gray-300 rounded-md"
                         >
@@ -283,7 +336,9 @@ export default function CustomerDetails() {
                           <option value="British">British</option>
                         </select>
                         {errors[`nationality-${index}`] && (
-                          <span className="text-red-500">{errors[`nationality-${index}`]}</span>
+                          <span className="text-red-500">
+                            {errors[`nationality-${index}`]}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -294,7 +349,7 @@ export default function CustomerDetails() {
                   onClick={addPassenger}
                   className=" py-2 px-4  text-[#32B57A] rounded-md text-right cursor-pointer"
                 >
-                 + Add Another Passenger
+                  + Add Another Passenger
                 </h1>
               </div>
 
@@ -308,150 +363,171 @@ export default function CustomerDetails() {
             </form>
           )}
 
-{activeTab === "additional" && (
-  <form className="mt-10 p-5 bg-white rounded-lg shadow-md" onSubmit={handleSubmit}>
-    <h1 className="text-2xl font-semibold text-[#32B57A]">Receiving Time</h1>
-    <div className="mt-5 space-y-5">
-      {/* Radio buttons for receiving time */}
-      <div className="flex items-center space-x-4">
-        <input
-          type="radio"
-          id="receivenow"
-          name="receivingtime"
-          value="now"
-          className="h-5 w-5 text-[#32B57A] border-gray-300 focus:ring-[#32B57A]"
-          onChange={handleChange}
-          checked={formData.receivingtime === "now"}
-        />
-        <label htmlFor="receivenow" className="text-lg">Receive Now</label>
+          {activeTab === "additional" && (
+            <form
+              className="mt-10 p-5 bg-white rounded-lg shadow-md"
+              onSubmit={handleSubmit}
+            >
+              <h1 className="text-2xl font-semibold text-[#32B57A]">
+                Receiving Time
+              </h1>
+              <div className="mt-5 space-y-5">
+                {/* Radio buttons for receiving time */}
+                <div className="flex items-center space-x-4">
+                  <input
+                    type="radio"
+                    id="receivenow"
+                    name="receivingtime"
+                    value="now"
+                    className="h-5 w-5 text-[#32B57A] border-gray-300 focus:ring-[#32B57A]"
+                    onChange={handleChange}
+                    checked={formData.receivingtime === "now"}
+                  />
+                  <label htmlFor="receivenow" className="text-lg">
+                    Receive Now
+                  </label>
 
-        <input
-          type="radio"
-          id="receivelater"
-          name="receivingtime"
-          value="later"
-          className="h-5 w-5 text-[#32B57A] border-gray-300 focus:ring-[#32B57A]"
-          onChange={handleChange}
-          checked={formData.receivingtime === "later"}
-        />
-        <label htmlFor="receivelater" className="text-lg">Receive Later</label>
-      </div>
-      {errors.receivingtime && (
-        <span className="text-red-500 text-sm">{errors.receivingtime}</span>
-      )}
+                  <input
+                    type="radio"
+                    id="receivelater"
+                    name="receivingtime"
+                    value="later"
+                    className="h-5 w-5 text-[#32B57A] border-gray-300 focus:ring-[#32B57A]"
+                    onChange={handleChange}
+                    checked={formData.receivingtime === "later"}
+                  />
+                  <label htmlFor="receivelater" className="text-lg">
+                    Receive Later
+                  </label>
+                </div>
+                {errors.receivingtime && (
+                  <span className="text-red-500 text-sm">
+                    {errors.receivingtime}
+                  </span>
+                )}
 
-      {/* New select fields when 'Receive Later' is selected */}
-      {formData.receivingtime === "later" && (
-        <div className="mt-4 space-y-4">
-          <h2 className="text-xl font-semibold text-[#32B57A]">Select Delivery Date</h2>
-          <input
-            type="date"
-            name="deliveryDate"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
-            onChange={handleChange}
-            value={formData.deliveryDate}
-          />
-          {errors.deliveryDate && (
-            <span className="text-red-500 text-sm">{errors.deliveryDate}</span>
+                {/* New select fields when 'Receive Later' is selected */}
+                {formData.receivingtime === "later" && (
+                  <div className="mt-4 space-y-4">
+                    <h2 className="text-xl font-semibold text-[#32B57A]">
+                      Select Delivery Date
+                    </h2>
+                    <input
+                      type="date"
+                      name="deliveryDate"
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
+                      onChange={handleChange}
+                      value={formData.deliveryDate}
+                    />
+                    {errors.deliveryDate && (
+                      <span className="text-red-500 text-sm">
+                        {errors.deliveryDate}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Important suggestion */}
+                <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-md text-sm">
+                  <p className="text-gray-700">
+                    Important Suggestion: To get good validity of your flight
+                    reservation, either schedule the delivery for a day before
+                    using it or book it just a day in advance.
+                  </p>
+                </div>
+
+                {/* Select dropdown for purpose */}
+                <div className="mt-4">
+                  <h2 className="text-xl font-semibold text-[#32B57A]">
+                    Purpose to buy dummy tickets
+                  </h2>
+                  <select
+                    name="purpose"
+                    id="purpose"
+                    className="w-full mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
+                    onChange={handleChange}
+                    value={formData.purpose}
+                  >
+                    <option value="">Select Purpose</option>
+                    <option value="business">Business</option>
+                    <option value="vacation">Vacation</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {errors.purpose && (
+                    <span className="text-red-500 text-sm">
+                      {errors.purpose}
+                    </span>
+                  )}
+                </div>
+
+                {/* Textarea for additional message */}
+                <div className="mt-4">
+                  <h2 className="text-xl font-semibold text-[#32B57A]">
+                    Additional Message
+                  </h2>
+                  <textarea
+                    name="message"
+                    placeholder="Enter your message"
+                    className="w-full mt-2 p-2 border border-gray-300 rounded-md h-32 resize-none focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
+                    onChange={handleChange}
+                    value={formData.message}
+                  ></textarea>
+                  {errors.message && (
+                    <span className="text-red-500 text-sm">
+                      {errors.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Next button */}
+                <div className="mt-4">
+                  <button
+                    type="submit"
+                    className="w-full py-2 bg-[#32B57A] text-white font-semibold rounded-md hover:bg-[#2c9d5f]"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </form>
           )}
         </div>
-      )}
-
-      {/* Important suggestion */}
-      <div className="mt-4 p-4 bg-gray-50 border border-gray-300 rounded-md text-sm">
-        <p className="text-gray-700">
-          Important Suggestion: To get good validity of your flight reservation, either schedule the delivery for a day before using it or book it just a day in advance.
-        </p>
-      </div>
-
-      {/* Select dropdown for purpose */}
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold text-[#32B57A]">Purpose to buy dummy tickets</h2>
-        <select
-          name="purpose"
-          id="purpose"
-          className="w-full mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
-          onChange={handleChange}
-          value={formData.purpose}
-        >
-          <option value="">Select Purpose</option>
-          <option value="business">Business</option>
-          <option value="vacation">Vacation</option>
-          <option value="other">Other</option>
-        </select>
-        {errors.purpose && (
-          <span className="text-red-500 text-sm">{errors.purpose}</span>
-        )}
-      </div>
-
-      {/* Textarea for additional message */}
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold text-[#32B57A]">Additional Message</h2>
-        <textarea
-          name="message"
-          placeholder="Enter your message"
-          className="w-full mt-2 p-2 border border-gray-300 rounded-md h-32 resize-none focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A]"
-          onChange={handleChange}
-          value={formData.message}
-        ></textarea>
-        {errors.message && (
-          <span className="text-red-500 text-sm">{errors.message}</span>
-        )}
-      </div>
-
-      {/* Next button */}
-      <div className="mt-4">
-        <button
-          type="submit"
-          className="w-full py-2 bg-[#32B57A] text-white font-semibold rounded-md hover:bg-[#2c9d5f]"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-  </form>
-)}
-
-
-
+        <div className="lg:w-[27%] w-full">
+          <div
+            className={` text-center bg-[#32B57A] py-5 rounded mr-2 text-white`}
+          >
+            <h1 className="text-xl">Order Summary</h1>
+          </div>
+          <div className="mt-5">
+            <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">
+              Flight
+            </h1>
+          </div>
+          <div className="mt-3 text-center">
+            <p>From</p>
+            <p className="text-center">➡</p>
+            <p>To</p>
+            <p>Date</p>
+          </div>
+          <div className="mt-3 flex flex-col gap-3">
+            <div className="flex justify-between pr-3">
+              <span>ROUTES</span>
+              <span>Rs 400.00</span>
+            </div>
+            <div className="flex justify-between pr-3">
+              <span>AMOUNT</span>
+              <span>Rs 1600.00</span>
+            </div>
+            <div className="flex justify-between pr-3 border-dashed border-t-2 border-black pt-3">
+              <span>GST </span>
+              <span>Rs 288.00</span>
+            </div>
+            <div className="flex justify-between pr-3 bg-gray-100 p-3 rounded">
+              <span>TOTAL</span>
+              <span>Rs 1888.00</span>
+            </div>
+          </div>
         </div>
-<div className="lg:w-[27%] w-full">
-<div
-
-className={` text-center bg-[#32B57A] py-5 rounded mr-2 text-white`}
->
-<h1 className="text-xl">Order Summary</h1>
-</div>
-      <div className="mt-5" >
-       <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">Flight</h1>
-       
-      </div>
-      <div className="mt-3 text-center">
-      <p>From</p>
-       <p className="text-center">➡</p>
-       <p>To</p>
-       <p>Date</p>
-      </div>
-      <div className="mt-3 flex flex-col gap-3">
-        <div className="flex justify-between pr-3">
-          <span>
-          ROUTES</span>
-          <span>Rs 400.00</span>
-        </div>
-        <div className="flex justify-between pr-3">
-          <span>AMOUNT</span>
-          <span>Rs 1600.00</span>
-        </div>
-        <div className="flex justify-between pr-3 border-dashed border-t-2 border-black pt-3">
-          <span >GST </span>
-          <span>Rs 288.00</span>
-        </div>
-        <div className="flex justify-between pr-3 bg-gray-100 p-3 rounded">
-          <span>TOTAL</span>
-          <span>Rs 1888.00</span>
-        </div>
-      </div>
-</div>
       </div>
     </div>
   );

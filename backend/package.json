@@ -1,11 +1,4 @@
 {
-  "dependencies": {
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "express": "^4.21.0",
-    "mysql": "^2.18.1",
-    "nodemailer": "^6.9.15"
-  },
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
@@ -15,5 +8,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "mysql": "^2.18.1"
+  }
 }
