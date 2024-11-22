@@ -15,11 +15,9 @@ import Faqs from './components/client/Faqs.jsx'
 import B2B from './components/client/B2B.jsx'
 import Login from './components/client/Login.jsx'
 import AdminLayout from './AdminLayout.jsx'
-import DashBoard from './components/admin/DashBoard.jsx'
-import B2BAdmin from './components/admin/B2BAdmin.jsx'
-import B2CAdmin from './components/admin/B2CAdmin.jsx'
-import Protected from './context/Protected.jsx'
 import CustomerDetails from './components/client/CustomerDetails.jsx'
+import Protected from './context/Protected.jsx'
+
 
 
 
@@ -40,10 +38,10 @@ let router=createBrowserRouter(
     <Route path='/customerdetails' element={<CustomerDetails/>}/>
 
     </Route>
-    <Route path='/admin' element={<AdminLayout/>}>
-    <Route path='' element={<Protected><DashBoard/></Protected>}/>
-    <Route path='/admin/b2badmin' element={<Protected><B2BAdmin/></Protected>}/>
-    <Route path='/admin/b2cadmin' element={<Protected><B2CAdmin/></Protected>}/>
+    <Route path='/admin' element={<Protected><AdminLayout/></Protected>}>
+    {/* <Route path='/admin' element={<Protected></Protected>}/> */}
+    {/* <Route path='/admin/b2badmin' element={<Protected><B2BAdmin/></Protected>}/> */}
+    {/* <Route path='/admin/b2cadmin' element={<Protected><B2CAdmin/></Protected>}/> */}
     <Route path='/admin/login' element={<Login/>}/>
     </Route>
    </>

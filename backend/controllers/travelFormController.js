@@ -40,8 +40,8 @@ exports.getTravelData = (req, res) => {
             // Parse JSON fields if necessary
             const formattedResults = results.map(row => ({
                 id: row.id,
-                flightType: row.flight_type,
-                selectedOption: row.selected_option,
+                flightType: row.flightType,
+                selectedOption: row.selectedOption,
                 routes: row.routes ? JSON.parse(row.routes) : [], // Parse routes JSON
                 hotels: row.hotels ? JSON.parse(row.hotels) : []  // Parse hotels JSON
             }));

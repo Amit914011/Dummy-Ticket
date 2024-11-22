@@ -1,9 +1,14 @@
 import React from 'react'
+import Sidebar from './Sidebar'
+import Header from './Header'
+import { Outlet } from 'react-router-dom'
 
 export default function Admin() {
   return (
     <div>
-      hello
+      <Header/>
+      <Sidebar/>
+      <Outlet/>
     </div>
   )
 }

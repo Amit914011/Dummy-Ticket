@@ -70,7 +70,7 @@ export default function CustomerDetails() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit1 = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
       const formData = {
@@ -80,7 +80,7 @@ export default function CustomerDetails() {
         passengers,
       };
       console.log("Form Data Submitted: ", formData);
-      window.open("/next-page", "_blank"); // Open a new tab to the next page
+      // window.open("/next-page", "_blank"); // Open a new tab to the next page
     }
   };
 
@@ -106,7 +106,7 @@ export default function CustomerDetails() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmitData = (e) => {
     e.preventDefault();
     // Handle form submission logic here
     console.log(formData);
@@ -117,9 +117,16 @@ export default function CustomerDetails() {
 
   async function getData() {
     let result = await axios.get("http://localhost:3500/api/getTravelData");
-    setData(result);
+    setData(result.data);
   }
-  console.log(data.data);
+  // console.log(data);
+  // console.log(data[0]);
+
+
+  // data.map((item,index)=>{
+  //   let data=item.routes[0]
+  //   console.log(data.from + data.to)
+  // })
   useEffect(() => {
     getData();
   }, []);
@@ -168,7 +175,7 @@ export default function CustomerDetails() {
 
           {/* Conditional Rendering based on Active Tab */}
           {activeTab === "passenger" && (
-            <form onSubmit={handleSubmit1}>
+            <form onSubmit={handleSubmit}>
               <h1 className="text-xl font-bold mt-5">Contact Details</h1>
               <div className="mt-5">
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -354,7 +361,7 @@ export default function CustomerDetails() {
               </div>
 
               <button
-                type="button"
+                type="submit"
                 onClick={handleNext}
                 className="mt-6 py-2 px-6 bg-[#32B57A] text-white rounded-md"
               >
@@ -366,7 +373,7 @@ export default function CustomerDetails() {
           {activeTab === "additional" && (
             <form
               className="mt-10 p-5 bg-white rounded-lg shadow-md"
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmitData}
             >
               <h1 className="text-2xl font-semibold text-[#32B57A]">
                 Receiving Time
@@ -498,17 +505,58 @@ export default function CustomerDetails() {
           >
             <h1 className="text-xl">Order Summary</h1>
           </div>
-          <div className="mt-5">
+         {
+          data.map((items,index)=>(
+            <>
+          <div className="mt-5" key={index}>
             <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">
-              Flight
+              {items.flightType}
             </h1>
           </div>
-          <div className="mt-3 text-center">
-            <p>From</p>
+           {
+            items.selectOption ||
+            <>
+                  {
+              items.routes &&
+              <>
+              {
+              items.routes.map((items,index)=>(
+                <div className="mt-3" key={index}>
+            <p>{items.from}</p>
             <p className="text-center">➡</p>
-            <p>To</p>
-            <p>Date</p>
-          </div>
+            <p>{items.to}</p>
+           <div className="flex justify-between">
+           <p className="">{items.departure}</p>
+           <p className="pr-3">{items.return}</p>
+           </div>
+
+
+            </div>
+              ))
+             }
+                       
+              </>
+             }            
+            </>
+           }
+             {/* Hotel data */}
+            {
+              items.hotels && 
+              <>
+               {
+              items.hotels.map((items,index)=>(
+               <div key={index}>
+                <p>{items.city}</p>
+                <div className="flex justify-between">
+                  <p>{items.checkin}</p>
+                  <p className="pr-3">{items.checkout}</p>
+                </div>
+               </div>
+                
+              ))
+             }
+              </>
+            }
           <div className="mt-3 flex flex-col gap-3">
             <div className="flex justify-between pr-3">
               <span>ROUTES</span>
@@ -516,17 +564,20 @@ export default function CustomerDetails() {
             </div>
             <div className="flex justify-between pr-3">
               <span>AMOUNT</span>
-              <span>Rs 1600.00</span>
+              <span>Rs 400.00</span>
             </div>
             <div className="flex justify-between pr-3 border-dashed border-t-2 border-black pt-3">
               <span>GST </span>
-              <span>Rs 288.00</span>
+              <span>Rs 72.00</span>
             </div>
             <div className="flex justify-between pr-3 bg-gray-100 p-3 rounded">
               <span>TOTAL</span>
-              <span>Rs 1888.00</span>
+              <span>Rs 472.00</span>
             </div>
           </div>
+            </>
+          ))
+         }
         </div>
       </div>
     </div>

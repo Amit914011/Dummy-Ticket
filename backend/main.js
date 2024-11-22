@@ -59,6 +59,20 @@ db.query(createTravelDataTable,(err,result)=>{
 })
 
 
+
+// Contact Details
+
+// const contactDetailsTable=`
+// CREATE TABLE IF NOT EXISTS Contact_details (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     selectedOption VARCHAR(50),
+//    flightType VARCHAR(50),
+//     routes JSON,
+//     hotels JSON
+// );
+// `
+
+
 // API here
 app.use('/api',adminLogin)
 app.use('/api',travelData)
