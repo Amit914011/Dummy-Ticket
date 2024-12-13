@@ -1,8 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'react-icons/ai'; // Import icons
 import axios from 'axios'; // Import axios
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import UserContext from '../../context/UserContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +9,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
-let {setAdminLogin} = useContext(UserContext)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,7 +21,6 @@ let {setAdminLogin} = useContext(UserContext)
 
       // Handle success response
       // if (response.data) {
-        setAdminLogin(true)
         navigate('/admin') ; // Navigate to /admin after successful login
       
       // } else {

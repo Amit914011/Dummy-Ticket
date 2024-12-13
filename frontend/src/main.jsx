@@ -13,10 +13,8 @@ import Blogs from './components/client/Blogs.jsx'
 import BlogPage from './components/client/BlogePage.jsx'
 import Faqs from './components/client/Faqs.jsx'
 import B2B from './components/client/B2B.jsx'
-import Login from './components/client/Login.jsx'
-import AdminLayout from './AdminLayout.jsx'
 import CustomerDetails from './components/client/CustomerDetails.jsx'
-import Protected from './context/Protected.jsx'
+import MainAdmin from './components/admin/MainAdmin.jsx'
 
 
 
@@ -38,12 +36,10 @@ let router=createBrowserRouter(
     <Route path='/customerdetails' element={<CustomerDetails/>}/>
 
     </Route>
-    <Route path='/admin' element={<Protected><AdminLayout/></Protected>}>
-    {/* <Route path='/admin' element={<Protected></Protected>}/> */}
-    {/* <Route path='/admin/b2badmin' element={<Protected><B2BAdmin/></Protected>}/> */}
-    {/* <Route path='/admin/b2cadmin' element={<Protected><B2CAdmin/></Protected>}/> */}
-    <Route path='/admin/login' element={<Login/>}/>
+    <Route path='/admin' element={<MainAdmin/>}>
+
     </Route>
+    
    </>
   )
 )
