@@ -6,17 +6,21 @@ import { useLocation } from "react-router-dom";
 import PrivateRoute from "./privateRoute/privateRoute";
 
 function App() {
-  const location=useLocation()
+  const location = useLocation();
 
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo({
-      top:'0',
-      behavior:'smooth'
-    })
-  },[location.pathname])
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [location.pathname]);
+
+  const hideNavbarRoutes = ["/admin/ticket", "/admin/help"];
+  const shouldShowNavbar = !hideNavbarRoutes.includes(location.pathname);
+
   return (
     <>
-      <Navbar />
+      {shouldShowNavbar && <Navbar />}
       <PrivateRoute />
       <Footer />
     </>

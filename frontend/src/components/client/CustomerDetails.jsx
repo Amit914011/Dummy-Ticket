@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-export default function CustomerDetails({itemData}) {
+export default function CustomerDetails({ itemData }) {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [passengers, setPassengers] = useState([
-    { id: 1, title: "", firstName: "", lastName: "", dob: "", nationality: "" },
+    { title: "", firstName: "", lastName: "", dob: "", nationality: "" },
   ]);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("passenger");
@@ -106,24 +106,82 @@ export default function CustomerDetails({itemData}) {
     }));
   };
 
-  const handleSubmitData = (e) => {
+  const handleSubmitData = async (e) => {
     e.preventDefault();
+
+
+    //   {
+    //     "email"  : "shashanksharma1235999@gmail.com",
+    //     "phone" : 8112357010,
+    //     "flightDetails" : [
+    //         {
+    //             "from": "Lucknow",
+    //             "to": "Kanpur",
+    //             "departureDate": "15/12/2024",
+    //             "type": "oneway"
+    //         }
+    //     ],
+    //      "passengerDetails": [
+    //         {
+    //         "firstName": "Anmol",
+    //         "lastName": "Sagar",
+    //         "dob": "05/06/1999",
+    //         "natinality": "Indian"
+    //     }
+    //     ],
+    //     "bookingType" : "hotel",
+    //      "delivery": {
+    //         "purpose": "Roaming",
+    //         "message": "Hey i am here ",
+    //         "delivery": "now"
+
+    //     },
+    //     "paymentAmount" : 2000,
+    //     "transactionId" : "payment12345"
+    // }
     // Handle form submission logic here
-    console.log(formData);
+
+
+    let payload = {
+      email: email,
+      phone: phone,
+      flightDetails: [
+        {
+          from: itemData?.routes[0].from,
+          to: itemData?.routes[0].to,
+
+          type: itemData?.flightType
+        }
+      ],
+      passengerDetails: passengers,
+      bookingType: itemData.selectedOption?.toLowerCase(),
+      delivery: formData,
+      paymentAmount: 200,
+      transactionId: "id for transaction"
+    }
+
+    await axios.post('http://localhost:2001/book', payload).then((res) => {
+      console.log(res);
+      alert("Done booking")
+    }).catch((err) => {
+      console.log(err);
+    })
+    // console.log("payload ", payload);
+    // console.log({ formData, itemData, selectedCountry, phone, email, passengers });
   };
 
 
 
   // Get Data API Here
   let [data, setData] = useState([itemData]);
-  console.log('customerDetails Data' , itemData)
+  console.log('customerDetails Data', itemData)
 
   async function getData() {
     let result = await axios.get("http://localhost:3500/api/getTravelData");
     setData(result.data);
 
   }
-  
+
   // useEffect(() => {
   //   getData();
   // }, []);
@@ -145,9 +203,8 @@ export default function CustomerDetails({itemData}) {
             </div>
             <button
               onClick={() => setActiveTab("passenger")}
-              className={`py-2 px-8  bg-[#32B57A]  rounded mr-2 text-white ${
-                activeTab === "passenger" ? "border-b-2 border-[#32B57A]" : ""
-              }`}
+              className={`py-2 px-8  bg-[#32B57A]  rounded mr-2 text-white ${activeTab === "passenger" ? "border-b-2 border-[#32B57A]" : ""
+                }`}
             >
               <span className="py-[10px] px-[20px] rounded-full bg-white text-[#32B57A] font-bold text-2xl">
                 2
@@ -157,9 +214,8 @@ export default function CustomerDetails({itemData}) {
               </span>
             </button>
             <button
-              className={`py-2 px-8 text-white  bg-[#32B57A]  rounded ${
-                activeTab === "additional" ? "border-b-2 border-[#32B57A]" : ""
-              }`}
+              className={`py-2 px-8 text-white  bg-[#32B57A]  rounded ${activeTab === "additional" ? "border-b-2 border-[#32B57A]" : ""
+                }`}
             >
               <span className="py-[10px] px-[19px] mr-1 rounded-full bg-white text-[#32B57A] font-bold text-2xl">
                 3
@@ -502,79 +558,79 @@ export default function CustomerDetails({itemData}) {
           >
             <h1 className="text-xl">Order Summary</h1>
           </div>
-         {
-          data.map((items,index)=>(
-            <>
-          <div className="mt-5" key={index}>
-            <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">
-              {items?.flightType}
-            </h1>
-          </div>
-           {
-            items?.selectOption ||
-            <>
-                  {
-              items?.routes &&
+          {
+            data.map((items, index) => (
               <>
-              {
-              items.routes.map((items,index)=>(
-                <div className="mt-3" key={index}>
-            <p>{items?.from}</p>
-            <p className="text-center">➡</p>
-            <p>{items?.to}</p>
-           <div className="flex justify-between">
-           <p className="">{items?.departure}</p>
-           <p className="pr-3">{items?.return}</p>
-           </div>
-
-
-            </div>
-              ))
-             }
-                       
-              </>
-             }            
-            </>
-           }
-             {/* Hotel data */}
-            {
-              items.hotels && 
-              <>
-               {
-              items.hotels.map((items,index)=>(
-               <div key={index}>
-                <p>{items?.city}</p>
-                <div className="flex justify-between">
-                  <p>{items?.checkin}</p>
-                  <p className="pr-3">{items?.checkout}</p>
+                <div className="mt-5" key={index}>
+                  <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">
+                    {items?.flightType}
+                  </h1>
                 </div>
-               </div>
-                
-              ))
-             }
+                {
+                  items?.selectOption ||
+                  <>
+                    {
+                      items?.routes &&
+                      <>
+                        {
+                          items.routes.map((items, index) => (
+                            <div className="mt-3" key={index}>
+                              <p>{items?.from}</p>
+                              <p className="text-center">➡</p>
+                              <p>{items?.to}</p>
+                              <div className="flex justify-between">
+                                <p className="">{items?.departure}</p>
+                                <p className="pr-3">{items?.return}</p>
+                              </div>
+
+
+                            </div>
+                          ))
+                        }
+
+                      </>
+                    }
+                  </>
+                }
+                {/* Hotel data */}
+                {
+                  items.hotels &&
+                  <>
+                    {
+                      items.hotels.map((items, index) => (
+                        <div key={index}>
+                          <p>{items?.city}</p>
+                          <div className="flex justify-between">
+                            <p>{items?.checkin}</p>
+                            <p className="pr-3">{items?.checkout}</p>
+                          </div>
+                        </div>
+
+                      ))
+                    }
+                  </>
+                }
+                <div className="mt-3 flex flex-col gap-3">
+                  <div className="flex justify-between pr-3">
+                    <span>ROUTES</span>
+                    <span>Rs 400.00</span>
+                  </div>
+                  <div className="flex justify-between pr-3">
+                    <span>AMOUNT</span>
+                    <span>Rs 400.00</span>
+                  </div>
+                  <div className="flex justify-between pr-3 border-dashed border-t-2 border-black pt-3">
+                    <span>GST </span>
+                    <span>Rs 72.00</span>
+                  </div>
+                  <div className="flex justify-between pr-3 bg-gray-100 p-3 rounded">
+                    <span>TOTAL</span>
+                    <span>Rs 472.00</span>
+                  </div>
+                </div>
               </>
-            }
-          <div className="mt-3 flex flex-col gap-3">
-            <div className="flex justify-between pr-3">
-              <span>ROUTES</span>
-              <span>Rs 400.00</span>
-            </div>
-            <div className="flex justify-between pr-3">
-              <span>AMOUNT</span>
-              <span>Rs 400.00</span>
-            </div>
-            <div className="flex justify-between pr-3 border-dashed border-t-2 border-black pt-3">
-              <span>GST </span>
-              <span>Rs 72.00</span>
-            </div>
-            <div className="flex justify-between pr-3 bg-gray-100 p-3 rounded">
-              <span>TOTAL</span>
-              <span>Rs 472.00</span>
-            </div>
-          </div>
-            </>
-          ))
-         }
+            ))
+          }
         </div>
       </div>
     </div>

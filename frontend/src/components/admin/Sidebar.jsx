@@ -14,8 +14,8 @@ export default function Sidebar() {
 
   const menuItems = [
     { icon: <IoTicket  />, label: "Ticket", link: "/admin" },
-    { icon: <IoMdHelpCircle />, label: "Help", link: "/hel" },
-    { icon: <RiLogoutCircleRLine />, label: "Logout", link: "/logout" },
+    { icon: <IoMdHelpCircle />, label: "Help", link: "/admin/help" },
+    { icon: <RiLogoutCircleRLine />, label: "Logout", link: "/" },
   ];
 
   return (
