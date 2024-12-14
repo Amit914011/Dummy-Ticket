@@ -1,82 +1,30 @@
-const express = require('express')
-const db=require('./databaseConfi/dbconfig')
-const adminLogin=require('./routers/loginRoute')
-const travelData=require('./routers/travelFormRoute')
-const bodyParser=require('body-parser')
-const cors=require('cors')
-const app=express()
-const port=3500
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-app.use(express.json())
-app.use(bodyParser.urlencoded({extended:true}))
-app.use(cors())
+const cors = require("cors")
 
+const authRoutes = require('./routes/authRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
+const app = express();
 
-// databse connection here
-db.connect((err)=>{
-    if(err) throw err
-    else(
-        console.log('database connected successfull')
-    )
+// Middleware
+app.use(express.json());
+app.use(cors({}))
 
-})
+// Database Connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => console.log('MongoDB Connected')).catch(err => console.error(err));
 
-// login table create here
-const loginTable=`
-CREATE TABLE IF NOT EXISTS login (
-    id int AUTO_INCREMENT NOT NULL,
-    userName varchar(255),
-    password varchar(255),
-   primary key (id)
-);
-`
-db.query(loginTable,(err,result)=>{
-    if(err) throw err
-    else(
-        console.log("Login table created successfull")
-    )
-})
+// Routes
+app.use('/auth', authRoutes);
+app.use('/book', bookingRoutes);
+app.use('/contact', contactRoutes);
 
-
-
-
-// create table of travels Data
-const createTravelDataTable=`
-CREATE TABLE IF NOT EXISTS travel_data (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    selectedOption VARCHAR(50),
-   flightType VARCHAR(50),
-    routes JSON,
-    hotels JSON
-);
-`
-db.query(createTravelDataTable,(err,result)=>{
-    if(err) throw err
-    else(
-        console.log('Create Travel Data Table Successfull')
-    )
-})
-
-
-
-// Contact Details
-
-// const contactDetailsTable=`
-// CREATE TABLE IF NOT EXISTS Contact_details (
-//     id INT AUTO_INCREMENT PRIMARY KEY,
-//     selectedOption VARCHAR(50),
-//    flightType VARCHAR(50),
-//     routes JSON,
-//     hotels JSON
-// );
-// `
-
-
-// API here
-app.use('/api',adminLogin)
-app.use('/api',travelData)
-
-app.listen(port,()=>{
-    console.log(`Server Running on ${port}`)
-})
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
