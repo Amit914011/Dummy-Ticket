@@ -3,7 +3,7 @@ import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'rea
 import axios from 'axios'; // Import axios
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
-const Login = () => {
+const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +40,7 @@ const Login = () => {
     }
   };
 
-  
+
 
   return (
     <div className="flex items-center justify-center min-h-[610px] bg-gray-100">
@@ -119,4 +119,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

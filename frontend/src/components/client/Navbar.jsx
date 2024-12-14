@@ -39,20 +39,23 @@ const Navbar = () => {
 
         {/* Links Section */}
         <div className="hidden md:flex space-x-8 text-black font-bold">
-          <Link to="/b2b" className=" transition duration-300">
+          <Link to="/b2b" className=" transition duration-300 text-md">
             B2B
           </Link>
-          <Link to="/blogs" className=" transition duration-300">
+          <Link to="/blogs" className=" transition duration-300 text-md">
             Blog
           </Link>
-          <Link to="/faqs" className=" transition duration-300">
+          <Link to="/faqs" className=" transition duration-300 text-md">
             FAQs
+          </Link>
+          <Link to="/login" className=" transition duration-300 text-md">
+            Login
           </Link>
         </div>
 
         {/* Login Button Section */}
         <div className="hidden md:flex">
-        <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-2xl text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/> +91 6239484624</a>
+        <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-lg text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/> +91 6239484624</a>
         </div>
 
         {/* Hamburger Menu */}
