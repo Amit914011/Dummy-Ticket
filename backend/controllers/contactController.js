@@ -31,10 +31,8 @@ exports.getContacts = async (req, res) => {
 exports.updateContactStatus = async (req, res) => {
   const { id } = req.params;
 
-  console.log("reaching ");
   try {
     const contact = await Contact.findByIdAndUpdate(id, { status: 'resolved' }, { new: true });
-   console.log(contact , "contact");
     if (!contact) {
       return res.status(404).json({ message: 'Contact not found.' });
     }

@@ -20,7 +20,6 @@ exports.sendMail = async (email, subject, message) => {
       text: message
     })
 
-    console.log('Email sent successfully: ', info.messageId)
     return { success: true, messageId: info.messageId }
   } catch (error) {
     console.error('Error sending email: ', error)

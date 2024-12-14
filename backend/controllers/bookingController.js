@@ -38,7 +38,6 @@ exports.createBooking = async (req, res) => {
 };
 
 
-
 exports.getBooking = async (req, res) => {
   try {
     const allBookings = await Booking.find({ status: "Pending" }).populate({
@@ -51,7 +50,6 @@ exports.getBooking = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
 
 
 // Get Booking Details by ID
@@ -69,7 +67,6 @@ exports.getBookingById = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error", error });
   }
 };
-
 
 
 // Update Booking Status

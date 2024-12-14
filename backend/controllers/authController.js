@@ -42,7 +42,9 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-// Login API
+
+
+// Login Controller
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -62,23 +64,35 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
 
-    console.log(user , "user");
+    // Generate a token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Generate a session token
-    const userId = user._id
-
-    const bookings = await Booking.find({ userId : userId  }).select('orderId status passengerDetails paymentAmount createdAt');
-
-    if (!bookings || bookings.length === 0) {
-      return res.status(404).json({ message: 'No bookings found.' });
-    }
-    
-
-    res.status(200).json({ message: 'Login successful',  data : bookings });
+    res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+
+
+
+// Controller to Fetch Booking Details
+exports.getBookings = async (req, res) => {
+  const userId = req.user.userId; // Assumes userId is set in the middleware
+
+  try {
+    const bookings = await Booking.find({ userId }).select('orderId status passengerDetails paymentAmount createdAt');
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: 'No bookings found.' });
+    }
+
+    res.status(200).json({ message: 'Bookings fetched successfully', data: bookings });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 
 
 
@@ -93,7 +107,6 @@ exports.adminLogin = async (req, res) => {
   try {
     // Find admin by email
     const admin = await Adminuser.findOne({ email });
-    console.log(admin);
     if (!admin) {
       return res.status(404).json({ message: 'User not found.' });
     }

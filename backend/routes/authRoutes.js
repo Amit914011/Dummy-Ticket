@@ -8,12 +8,12 @@ const router = express.Router();
 router.post('/change-password', changePassword);
 router.post('/login', login);
 router.post('/admin-login', adminLogin);
-router.post('/admin-register', (async(req,res)=>{
-    const {email , password} = req.body
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin  = await new Adminuser({email , password : hashedPassword})
-      await newAdmin.save()
-      res.send("OK")
+router.post('/admin-register', (async (req, res) => {
+  const { email, password } = req.body
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newAdmin = await new Adminuser({ email, password: hashedPassword })
+  await newAdmin.save()
+  res.send("OK")
 }));
 
 
