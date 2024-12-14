@@ -315,18 +315,15 @@ export default function Form({ setData }) {
                           Return
                         </label>
                         <input
-                          type="date"
-                          id={`return-${index}`}
-                          value={route.return || new Date().toISOString().slice(0, 10)}
-                          onChange={(e) =>
-                            handleRouteChange(index, "return", e.target.value)
-                          }
-                          className={`w-full px-4 py-2 border ${
-                            errors[`route${index}Return`]
-                              ? "border-red-500"
-                              : "border-gray-500"
-                          } rounded text-black focus:outline-none focus:border-blue-400`}
-                        />
+  type="date"
+  id={`return-${index}`}
+  value={route.return || new Date().toISOString().slice(0, 10)}
+  onChange={(e) => handleRouteChange(index, "return", e.target.value)}
+  min={route.departure || new Date().toISOString().slice(0, 10)} // Ensure return is after departure
+  className={`w-full px-4 py-2 border ${
+    errors[`route${index}Return`] ? "border-red-500" : "border-gray-500"
+  } rounded text-black focus:outline-none focus:border-blue-400`}
+/>
                         {errors[`route${index}Return`] && (
                           <p className="text-red-500 text-sm">
                             {errors[`route${index}Return`]}
@@ -401,18 +398,18 @@ export default function Form({ setData }) {
                         Check-in
                       </label>
                       <input
-                        type="date"
-                        id={`checkin-${index}`}
-                        value={hotel.checkin}
-                        onChange={(e) =>
-                          handleHotelChange(index, "checkin", e.target.value)
-                        }
-                        className={`w-full px-4 py-2 border ${
-                          errors[`hotel${index}`]
-                            ? "border-red-500"
-                            : "border-gray-500"
-                        } rounded  text-black focus:outline-none focus:border-[#32B57A]`}
-                      />
+  type="date"
+  id={`checkin-${index}`}
+  value={hotel.checkin } 
+  onChange={(e) =>
+    handleHotelChange(index, "checkin", e.target.value)
+  }
+  min={new Date().toISOString().slice(0, 10)} // Disable past dates
+  className={`w-full px-4 py-2 border ${
+    errors[`hotel${index}`] ? "border-red-500" : "border-gray-500"
+  } rounded text-black focus:outline-none focus:border-[#32B57A]`}
+/>
+
                       {errors[`hotel${index}`] && (
                         <p className="text-red-500 text-sm">
                           {errors[`hotel${index}`]}
