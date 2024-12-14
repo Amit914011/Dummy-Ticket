@@ -1,35 +1,31 @@
 import React, { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'react-icons/ai'; // Import icons
-import axios from 'axios'; // Import axios
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
-  const handleSubmit = async (e) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateForm = () => {
+    if (!email.includes("@")) {
+      setErrorMessage("Please enter a valid email address.");
+      return false;
+    }
+    if (password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters.");
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      // Sending POST request to the API with username and password
-      const response = await axios.post('http://localhost:3000/api/login', {
-        username,
-        password,
-      });
-
-      // Handle success response
-      // if (response.data) {
-        navigate('/admin') ; // Navigate to /admin after successful login
-      
-      // } else {
-      //   setErrorMessage('Invalid credentials');
-      // }
-    } catch (error) {
-      // Handle error
-      setErrorMessage('Login failed. Please try again.');
-      console.error('Error logging in:', error);
+    if (validateForm()) {
+      const data=[{email,password}]
+      console.log(data)
     }
   };
 
@@ -38,7 +34,7 @@ const Login = () => {
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         {/* Logo Section */}
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold uppercase text-[#32B57A]">Login</h1>
+          <h1 className="text-2xl font-bold uppercase text-[#32B57A]">Check Ticket</h1>
         </div>
 
         {/* Error Message */}
@@ -53,18 +49,18 @@ const Login = () => {
           {/* Username Field */}
           <div className="mb-4 relative">
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-              Username or Email Address
+              Email Address
             </label>
             <div className="relative">
               <AiOutlineUser className="absolute left-3 top-2/4 transform -translate-y-1/2 text-[#32B57A] font-bold" size={20} />
               <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
                 placeholder="Enter your username or email"
-                required
+                
               />
             </div>
           </div>
@@ -83,7 +79,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
                 placeholder="Enter your password"
-                required
+                
               />
               <button
                 type="button"
@@ -101,10 +97,13 @@ const Login = () => {
               type="submit"
               className="w-full bg-[#32B57A] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#32B57A] focus:outline-none focus:ring-2 focus:ring-[#32B57A] focus:ring-offset-2"
             >
-              Log In
+              Check Ticket
             </button>
           </div>
         </form>
+        <div>
+          <Link to='/forgot-password'><p className='text-center text hover:underline cursor-pointer'>Forgot Password</p></Link>
+        </div>
       </div>
     </div>
   );

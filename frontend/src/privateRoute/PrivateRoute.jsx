@@ -14,7 +14,10 @@ import B2B from '../components/client/B2B';
 import CustomerDetails from '../components/client/CustomerDetails';
 import MainAdmin from '../components/admin/MainAdmin';
 import Ticket from '../components/admin/Ticket';
-import Login from '../components/admin/Login';
+import Login from '../components/client/Login';
+import ForgotPassword from '../components/client/ForgotPassword';
+import ClientTicket from '../components/client/ClientTicket';
+
 
 // Importing all components (ensure these imports exist)
 
@@ -39,6 +42,9 @@ export default function PrivateRoute() {
         <Route path="faqs" element={<Faqs />} />
         <Route path="b2b" element={<B2B />} />
         <Route path="customerdetails" element={<CustomerDetails itemData={data} />} />
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/forgot-password' element={<ForgotPassword/>}/>
+        <Route path='/ticket' element={<ClientTicket/>}/>
 
 
 
