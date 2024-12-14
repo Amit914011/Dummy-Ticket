@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'react-icons/ai'; // Import icons
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { LoginUser } from '../../services/api.service';
+import axios from "axios"
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate =  useNavigate()
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -21,11 +26,18 @@ const Login = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const data=[{email,password}]
-      console.log(data)
+
+      await LoginUser({ email, password }).then((res) => {
+        if (res.status === 200) {
+          localStorage.setItem("token" , res.data.token)
+          navigate('/ticket')
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     }
   };
 
@@ -60,7 +72,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
                 placeholder="Enter your username or email"
-                
+
               />
             </div>
           </div>
@@ -79,14 +91,14 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#32B57A] focus:border-[#32B57A] sm:text-sm"
                 placeholder="Enter your password"
-                
+
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-[#32B57A]"
               >
-                {showPassword ? <AiFillEyeInvisible size={20} className='text-[#32B57A]' /> : <AiFillEye size={20} className='text-[#32B57A]'/>}
+                {showPassword ? <AiFillEyeInvisible size={20} className='text-[#32B57A]' /> : <AiFillEye size={20} className='text-[#32B57A]' />}
               </button>
             </div>
           </div>

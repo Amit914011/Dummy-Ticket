@@ -1,14 +1,15 @@
 
 import apiClient from "./interceptor"; // Adjust the path based on your file structure
 
-// Register User API
-export const RegisterUser = (data) => {
-    return apiClient.post("/register", data);
-};
+
 
 // Login User API
 export const LoginUser = (data) => {
-    return apiClient.post("/login", data);
+    return apiClient.post("http://localhost:2001/auth/login", data);
+};
+
+export const ChangePassword = (data) => {
+    return apiClient.post("http://localhost:2001/auth/change-password", data);
 };
 
 
@@ -37,5 +38,11 @@ export const depositPayment = async (data, file) => {
         throw error;
     }
 };
+
+
+export const fetchOrders = () => {
+    return apiClient.get("http://localhost:2001/book/client-bookings");
+};  
+
 
 

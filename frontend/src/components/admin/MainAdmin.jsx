@@ -50,7 +50,6 @@ export default function Ticket() {
           )
         );
         setModalOpen(false);
-        console.log(res);
       }).catch((err) => {
         console.log(err);
       })

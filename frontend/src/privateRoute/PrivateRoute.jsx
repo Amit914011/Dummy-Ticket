@@ -49,13 +49,11 @@ export default function PrivateRoute() {
         <Route path='/ticket' element={<ClientTicket/>}/>
 
 
-
         {/* Admin routes */}
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/ticket" element={<MainAdmin />} />
         <Route path='/admin/help' element={<Ticket />} />
         <Route path='/booking/:id' element={<BookingDetails />} />
-
 
       </Routes>
     </>

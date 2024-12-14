@@ -10,7 +10,6 @@ export default function BookingDetails() {
     const fetchBookingDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:2001/book/${id}`);
-        console.log(response);
         setBooking(response.data);
       } catch (error) {
         console.error("Error fetching booking details:", error);

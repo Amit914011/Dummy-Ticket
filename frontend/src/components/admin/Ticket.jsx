@@ -14,7 +14,6 @@ export default function Ticket() {
     const fetchTickets = async () => {
       try {
         await axios.get('http://localhost:2001/contact').then((res) => {
-          console.log(res);
           setTickets(res.data.data || []);
           setLoading(false);
         }).catch((err) => {
@@ -40,7 +39,6 @@ export default function Ticket() {
   const markAsDone = async (id) => {
     try {
       await axios.patch(`http://localhost:2001/contact/${id}/status`).then((res) => {
-        console.log(res);
         alert("Markey done ")
         setTickets((prevTickets) => prevTickets.filter((ticket) => ticket._id !== id));
       }).catch((err) => {

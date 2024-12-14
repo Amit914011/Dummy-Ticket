@@ -20,7 +20,6 @@ const AdminLogin = () => {
       }).then((res) => {
         navigate('/admin/ticket'); // Navigate to /admin after successful login
            localStorage.setItem("token" , res?.data?.token)
-          console.log(res);
 
       }).catch((err) => {
         console.log(err);

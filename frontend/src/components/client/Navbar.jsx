@@ -27,14 +27,13 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`${
-        isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'
-      } fixed w-full top-0 z-50 transition-all duration-300 ease-in-out `}
+      className={`${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'
+        } fixed w-full top-0 z-50 transition-all duration-300 ease-in-out `}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         {/* Logo Section */}
         <div className="text-2xl font-bold black uppercase ">
-         <Link to="/" > Support My Travel</Link>
+          <Link to="/" > Support My Travel</Link>
         </div>
 
         {/* Links Section */}
@@ -48,14 +47,24 @@ const Navbar = () => {
           <Link to="/faqs" className=" transition duration-300 text-md">
             FAQs
           </Link>
-          <Link to="/login" className=" transition duration-300 text-md">
-            Login
-          </Link>
+
+          {
+            localStorage.getItem("token") ? (
+              <Link to="/" onClick={()=>localStorage.removeItem("token")} className=" transition text-red-700 duration-300 text-md">
+                Logout
+              </Link>
+            ) : (
+              <Link to="/login" className=" transition duration-300 text-md">
+                Login
+              </Link>
+            )
+          }
+
         </div>
 
         {/* Login Button Section */}
         <div className="hidden md:flex">
-        <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-lg text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/> +91 6239484624</a>
+          <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-lg text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline' /> +91 6239484624</a>
         </div>
 
         {/* Hamburger Menu */}
@@ -94,8 +103,8 @@ const Navbar = () => {
           >
             FAQs
           </Link>
-          
-          <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-2xl text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline'/>6239484624</a>
+
+          <a href='tel:6239484624' className='bg-[#32B57A] block w-full p-2 rounded text-2xl text-[#fff]'><FaWhatsapp className='text-2xl text-[#ffff] bg-[#32B57A] inline' />6239484624</a>
         </div>
       )}
     </nav>

@@ -79,7 +79,6 @@ export default function CustomerDetails({ itemData }) {
         email,
         passengers,
       };
-      console.log("Form Data Submitted: ", formData);
       // window.open("/next-page", "_blank"); // Open a new tab to the next page
     }
   };
@@ -161,30 +160,18 @@ export default function CustomerDetails({ itemData }) {
     }
 
     await axios.post('http://localhost:2001/book', payload).then((res) => {
-      console.log(res);
       alert("Done booking")
     }).catch((err) => {
       console.log(err);
     })
-    // console.log("payload ", payload);
-    // console.log({ formData, itemData, selectedCountry, phone, email, passengers });
   };
 
 
 
   // Get Data API Here
   let [data, setData] = useState([itemData]);
-  console.log('customerDetails Data', itemData)
 
-  async function getData() {
-    let result = await axios.get("http://localhost:3500/api/getTravelData");
-    setData(result.data);
 
-  }
-
-  // useEffect(() => {
-  //   getData();
-  // }, []);
 
   return (
     <div className="mt-[150px] px-5 md:px-20">

@@ -100,7 +100,6 @@ export default function Form({ setData }) {
       // });
 
       // Log the form data after successful submission
-      console.log("Form Submitted:", data);
       setData(data);
 
       // Redirect to the next page (for example, /customerdetails)

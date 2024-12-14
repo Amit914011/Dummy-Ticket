@@ -1,32 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchOrders } from "../../services/api.service";
 
 export default function ClientTicket() {
-  const tickets = [
-    {
-      id: "ORD1234",
-      customerName: "John Doe",
-      phoneNumber: "123-456-7890",
-      orderStatus: "Completed",
-      amountPaid: "$120.50",
-      date: "2024-12-14",
-    },
-    {
-      id: "ORD5678",
-      customerName: "Jane Smith",
-      phoneNumber: "987-654-3210",
-      orderStatus: "Pending",
-      amountPaid: "$75.00",
-      date: "2024-12-12",
-    },
-    {
-      id: "ORD9101",
-      customerName: "Alice Johnson",
-      phoneNumber: "555-555-5555",
-      orderStatus: "Cancelled",
-      amountPaid: "$0.00",
-      date: "2024-12-10",
-    },
-  ];
+
+  const [tickets, setTicket] = useState()
+
+
+  const fetOrders = async () => {
+    await fetchOrders().then((res) => {
+      setTicket(res.data.data)
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+
+
+
+
+  useEffect(() => {
+    fetOrders()
+  }, [])
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 pt-20">
@@ -38,38 +33,38 @@ export default function ClientTicket() {
               <tr>
                 <th className="px-4 py-2">Order ID</th>
                 <th className="px-4 py-2">Customer Name</th>
-                <th className="px-4 py-2">Phone Number</th>
                 <th className="px-4 py-2">Order Status</th>
                 <th className="px-4 py-2">Amount Paid</th>
                 <th className="px-4 py-2">Date</th>
               </tr>
             </thead>
             <tbody>
-              {tickets.map((ticket, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                  } hover:bg-gray-200`}
-                >
-                  <td className="border px-4 py-2">{ticket.id}</td>
-                  <td className="border px-4 py-2">{ticket.customerName}</td>
-                  <td className="border px-4 py-2">{ticket.phoneNumber}</td>
-                  <td
-                    className={`border px-4 py-2 ${
-                      ticket.orderStatus === "Completed"
-                        ? "text-green-500"
-                        : ticket.orderStatus === "Pending"
-                        ? "text-yellow-500"
-                        : "text-red-500"
-                    }`}
+              {tickets?.length > 0 && tickets.map((item, index) => {
+                return (
+                  <tr
+                    key={index}
+                    className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                      } hover:bg-gray-200`}
                   >
-                    {ticket.orderStatus}
-                  </td>
-                  <td className="border px-4 py-2">{ticket.amountPaid}</td>
-                  <td className="border px-4 py-2">{ticket.date}</td>
-                </tr>
-              ))}
+                    <td className="border px-4 py-2">{item?._id}</td>
+                    <td className="border px-4 py-2">{item?.passengerDetails?.map((i) => i.firstName)}</td>
+                    <td
+                      className={`border px-4 py-2 ${item?.status === "Completed"
+                        ? "text-green-500"
+                        : item?.status === "Pending"
+                          ? "text-yellow-500"
+                          : "text-red-500"
+                        }`}
+                    >
+                      {item?.status}
+                    </td>
+                    <td className="border px-4 py-2">{item?.paymentAmount}</td>
+                    <td className="border px-4 py-2">{new Date(Number(item?.createdAt)).toLocaleDateString()}</td>
+                  </tr>
+                )
+              }
+
+              )}
             </tbody>
           </table>
         </div>
