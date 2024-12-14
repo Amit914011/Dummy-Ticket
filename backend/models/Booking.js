@@ -8,7 +8,7 @@ const bookingSchema = new mongoose.Schema({
             to: String,
             departureDate: String,
             returnDate: String,
-            type: { type: String, required: true, enum: ["oneway", "roundtrip", "multitrip"] },
+            type: { type: String, required: true, enum: ["One Way", "roundtrip", "multitrip"] },
         }
     ],
     hotelDetails: [{
@@ -20,13 +20,14 @@ const bookingSchema = new mongoose.Schema({
         firstName: String,
         lastName: String,
         dob: String,
-        natinality: String,
+        nationality: String,
+        title : String
     }],
     bookingType: { type: String, required: true, enum: ["hotel", "flight", "both"] },
     delivery: {
         purpose: String,
         message: String,
-        delivery: { type: String, enum: ["now", "later"] },
+        receivingtime: { type: String, enum: ["now", "later"] },
         date: String
     },
 
