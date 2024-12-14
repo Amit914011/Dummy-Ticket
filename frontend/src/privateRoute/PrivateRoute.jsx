@@ -15,6 +15,7 @@ import CustomerDetails from '../components/client/CustomerDetails';
 import MainAdmin from '../components/admin/MainAdmin';
 import Ticket from '../components/admin/Ticket';
 import Login from '../components/admin/Login';
+import BookingDetails from '../components/admin/BookingDetail';
 
 // Importing all components (ensure these imports exist)
 
@@ -46,6 +47,8 @@ export default function PrivateRoute() {
         <Route path="/admin" element={<Login />} />
         <Route path="/admin/ticket" element={<MainAdmin />} />
         <Route path='/admin/help' element={<Ticket />} />
+        <Route path='/booking/:id' element={<BookingDetails />} />
+
 
       </Routes>
     </>

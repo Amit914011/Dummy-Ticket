@@ -14,15 +14,22 @@ const Login = () => {
 
     try {
       // Sending POST request to the API with username and password
-      const response = await axios.post('http://localhost:3000/api/login', {
-        username,
+      await axios.post('http://localhost:2001/auth/admin-login', {
+       email :  username,
         password,
-      });
+      }).then((res) => {
+        navigate('/admin/ticket'); // Navigate to /admin after successful login
+           localStorage.setItem("token" , res?.data?.token)
+          console.log(res);
+
+      }).catch((err) => {
+        console.log(err);
+      })
 
       // Handle success response
       // if (response.data) {
-        navigate('/admin/ticket') ; // Navigate to /admin after successful login
-      
+    
+
       // } else {
       //   setErrorMessage('Invalid credentials');
       // }
@@ -32,6 +39,8 @@ const Login = () => {
       console.error('Error logging in:', error);
     }
   };
+
+  
 
   return (
     <div className="flex items-center justify-center min-h-[610px] bg-gray-100">
@@ -90,7 +99,7 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2/4 transform -translate-y-1/2 text-gray-500 hover:text-[#32B57A]"
               >
-                {showPassword ? <AiFillEyeInvisible size={20} className='text-[#32B57A]' /> : <AiFillEye size={20} className='text-[#32B57A]'/>}
+                {showPassword ? <AiFillEyeInvisible size={20} className='text-[#32B57A]' /> : <AiFillEye size={20} className='text-[#32B57A]' />}
               </button>
             </div>
           </div>
