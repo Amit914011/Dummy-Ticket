@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
-import './App.css'
-import Navbar from './components/client/Navbar'
-import Footer from './components/client/Footer'
-import {Outlet, useLocation} from 'react-router-dom'
+import React, { useEffect } from "react";
+import "./App.css";
+import Navbar from "./components/client/Navbar";
+import Footer from "./components/client/Footer";
+import { useLocation } from "react-router-dom";
+import PrivateRoute from "./privateRoute/privateRoute";
 
 function App() {
-
   const location=useLocation()
 
   useEffect(()=>{
@@ -14,19 +14,13 @@ function App() {
       behavior:'smooth'
     })
   },[location.pathname])
-
   return (
-  <>
-  
-  <div className=''>
-  <Navbar/>
-    </div> 
-    <Outlet/>
-    <Footer/>
-  
-  </>
-  
-  )
+    <>
+      <Navbar />
+      <PrivateRoute />
+      <Footer />
+    </>
+  );
 }
 
-export default App
+export default App;

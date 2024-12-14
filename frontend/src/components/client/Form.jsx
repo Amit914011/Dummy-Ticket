@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
-export default function Form() {
+export default function Form({setData}) {
   const [selectedOption, setSelectedOption] = useState("Flight");
   const [flightType, setFlightType] = useState("One Way");
   const [routes, setRoutes] = useState([{ from: "", to: "", departure: "", return: "" }]);
@@ -72,29 +72,7 @@ export default function Form() {
     return Object.keys(formErrors).length === 0; // If no errors, form is valid
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   // Validate form data
-  //   if (!validateForm()) {
-  //   //   alert("Please fill all required fields correctly.");
-  //     return;
-  //   }
-
-  //   // Form is valid, now handle form submission
-  //   let data={ selectedOption, flightType, routes, hotels }
-  //   const response = await axios.post('http://localhost:6666/api/saveTravelData', data, {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   });
-  //   console.log('Form Submitted:',data );
-    
-  //   // Redirect to the next page (for example, /success)
-  //   navigate('/customerdetails'); // Adjust the route as per your application
-  // };
-
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -110,14 +88,13 @@ export default function Form() {
   
     try {
       // Use POST request to send data
-      const response = await axios.post('http://localhost:3500/api/saveTravelData', data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      // const response = await axios.post('http://localhost:3500/api/saveTravelData', data, {
+        
+      // });
   
       // Log the form data after successful submission
       console.log('Form Submitted:', data);
+      setData(data)
   
       // Redirect to the next page (for example, /customerdetails)
       navigate('/customerdetails'); // Adjust the route as per your application

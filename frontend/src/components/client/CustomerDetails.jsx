@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-export default function CustomerDetails() {
+export default function CustomerDetails({itemData}) {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -112,24 +112,21 @@ export default function CustomerDetails() {
     console.log(formData);
   };
 
+
+
   // Get Data API Here
-  let [data, setData] = useState([]);
+  let [data, setData] = useState([itemData]);
+  console.log('customerDetails Data' , itemData)
 
   async function getData() {
     let result = await axios.get("http://localhost:3500/api/getTravelData");
     setData(result.data);
+
   }
-  // console.log(data);
-  // console.log(data[0]);
-
-
-  // data.map((item,index)=>{
-  //   let data=item.routes[0]
-  //   console.log(data.from + data.to)
-  // })
-  useEffect(() => {
-    getData();
-  }, []);
+  
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   return (
     <div className="mt-[150px] px-5 md:px-20">
@@ -510,24 +507,24 @@ export default function CustomerDetails() {
             <>
           <div className="mt-5" key={index}>
             <h1 className="bg-gray-200 text-center w-[97.5%] py-3 text-xl rounded ">
-              {items.flightType}
+              {items?.flightType}
             </h1>
           </div>
            {
-            items.selectOption ||
+            items?.selectOption ||
             <>
                   {
-              items.routes &&
+              items?.routes &&
               <>
               {
               items.routes.map((items,index)=>(
                 <div className="mt-3" key={index}>
-            <p>{items.from}</p>
+            <p>{items?.from}</p>
             <p className="text-center">➡</p>
-            <p>{items.to}</p>
+            <p>{items?.to}</p>
            <div className="flex justify-between">
-           <p className="">{items.departure}</p>
-           <p className="pr-3">{items.return}</p>
+           <p className="">{items?.departure}</p>
+           <p className="pr-3">{items?.return}</p>
            </div>
 
 
@@ -546,10 +543,10 @@ export default function CustomerDetails() {
                {
               items.hotels.map((items,index)=>(
                <div key={index}>
-                <p>{items.city}</p>
+                <p>{items?.city}</p>
                 <div className="flex justify-between">
-                  <p>{items.checkin}</p>
-                  <p className="pr-3">{items.checkout}</p>
+                  <p>{items?.checkin}</p>
+                  <p className="pr-3">{items?.checkout}</p>
                 </div>
                </div>
                 

@@ -2,7 +2,7 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 
-const App = () => {
+const MainAdmin = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -19,4 +19,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default MainAdmin;

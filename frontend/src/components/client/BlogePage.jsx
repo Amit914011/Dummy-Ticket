@@ -26,7 +26,7 @@ const blogs = [
   },
 ];
 
-export default function SingleBlog() {
+export default function BlogPage() {
   const { id } = useParams(); // Get the blog id from the URL
   const blog = blogs.find(blog => blog.id === parseInt(id)); // Find the blog by ID
 

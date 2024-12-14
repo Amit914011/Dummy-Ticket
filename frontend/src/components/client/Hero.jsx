@@ -38,9 +38,13 @@ import Form from "./Form";
 
 
 
-const Hero = () => {
+const Hero = ({setData}) => {
+
+
+
   const [activeTab, setActiveTab] = useState("flight");
   const [tripType, setTripType] = useState("one-way");
+  
 
   const handleTabSwitch = (tab) => {
     setActiveTab(tab);
@@ -258,7 +262,8 @@ const Hero = () => {
         {/* Right Column: Tab Switcher */}
         <div className="w-full md:w-1/2 mt-8 md:mt-10">
           {/* <LeadGene/> */}
-          <Form/>
+
+          <Form setData={setData}/>
         </div>
 
       </section>
