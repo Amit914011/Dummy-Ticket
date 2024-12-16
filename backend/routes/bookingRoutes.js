@@ -1,11 +1,13 @@
 const express = require('express');
-const { createBooking, getBooking, getBookingById, updateBookingStatus } = require('../controllers/bookingController');
+const { createBooking, getBooking, getBookingById, updateBookingStatus, removeBookingIfOrderFails } = require('../controllers/bookingController');
 const { authorizeAdmin, authenticate } = require('../middlewares/authMiddleware');
 const { getBookings } = require('../controllers/authController');
 
 const router = express.Router();
 
 router.post('/',  createBooking);
+router.delete('/:orderId',  removeBookingIfOrderFails);
+
 router.get('/client-bookings' ,  authenticate() , getBookings);
 router.get('/',  authenticate()  , getBooking);
 router.get('/:id', authenticate() , authorizeAdmin() ,  getBookingById);

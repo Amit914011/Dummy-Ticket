@@ -1,5 +1,7 @@
 const Booking = require('../models/Booking');
 
+const mongoose = require("mongoose")
+
 const User = require('../models/User');
 
 require("dotenv").config()
@@ -12,7 +14,7 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-module.exports = razorpayInstance;
+
 
 
 
@@ -25,7 +27,6 @@ exports.createBooking = async (req, res) => {
     passengerDetails,
     bookingType,
     paymentAmount,
-    transactionId
   } = req.body;
 
   const session = await mongoose.startSession();
@@ -59,7 +60,7 @@ exports.createBooking = async (req, res) => {
       passengerDetails,
       bookingType,
       paymentAmount,
-      transactionId,
+      RazorPayOrderId : order.id
     };
 
     // Create a new booking
@@ -70,7 +71,40 @@ exports.createBooking = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.status(201).json({ bookingId: newBooking._id, message: 'Booking confirmed', order });
+    res.status(201).json({ bookingId: newBooking._id, message: 'Booking confirmed', orderId : order });
+  } catch (error) {
+    // Rollback transaction
+    await session.abortTransaction();
+    session.endSession();
+
+    // Send error response
+    res.status(500).json({
+      message: 'Due to an error, the booking could not be initiated. Please try again later.',
+      error
+    });
+  }
+};
+
+
+
+exports.removeBookingIfOrderFails = async (req, res) => {
+ const {orderId} = req.params
+
+ if(!orderId) res.status(400).send({error : true , success : false , message  : "Order Id is required"})
+
+
+    
+  try {
+
+    console.log("reaching to delete");
+
+    const deletedBooking = await  Booking.deleteOne({RazorPayOrderId : orderId });
+
+     console.log(deletedBooking);
+
+
+
+    res.status(201).json({ deletedBooking ,  message: 'Booking deleted',  });
   } catch (error) {
     // Rollback transaction
     await session.abortTransaction();

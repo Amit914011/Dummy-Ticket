@@ -32,8 +32,8 @@ const bookingSchema = new mongoose.Schema({
     },
 
     paymentAmount: Number,
-    transactionId: String,
     status: { type: String, default: "Pending" },
+    RazorPayOrderId : { type: String},
     createdAt: { type: String, default: Date.now },
 });
 
