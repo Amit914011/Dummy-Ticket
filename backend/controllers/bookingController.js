@@ -2,22 +2,56 @@ const Booking = require('../models/Booking');
 
 const User = require('../models/User');
 
+require("dotenv").config()
+
+
+const Razorpay = require('razorpay');
+
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID, // Use environment variables for security
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+module.exports = razorpayInstance;
+
 
 
 exports.createBooking = async (req, res) => {
-  const { email, phone, flightDetails, hotelDetails, passengerDetails, bookingType, paymentAmount, transactionId } = req.body;
+  const {
+    email,
+    phone,
+    flightDetails,
+    hotelDetails,
+    passengerDetails,
+    bookingType,
+    paymentAmount,
+    transactionId
+  } = req.body;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
+    let newUser;
 
-    var newUser ;
+    // Check if user exists
+    const isExist = await User.findOne({ email }).session(session);
 
-
-    const isExist = await User.findOne({ email })
     if (!isExist) {
-      newUser = await new User({ email, phone })
-      await newUser.save();
+      // Create a new user
+      newUser = new User({ email, phone });
+      await newUser.save({ session });
     }
 
-    // newUser._id 
+    // Create Razorpay order
+    const options = {
+      amount: paymentAmount * 100, // Convert amount to smallest currency unit
+      currency: 'INR',
+    };
+
+    const order = await razorpayInstance.orders.create(options);
+
+    // Prepare booking details
     const details = {
       userId: isExist ? isExist._id : newUser._id,
       flightDetails,
@@ -25,18 +59,30 @@ exports.createBooking = async (req, res) => {
       passengerDetails,
       bookingType,
       paymentAmount,
-      transactionId
-    }
+      transactionId,
+    };
 
-    const newBooking = await new Booking(details);
-    await newBooking.save();
+    // Create a new booking
+    const newBooking = new Booking(details);
+    await newBooking.save({ session });
 
-    res.status(201).json({ bookingId: newBooking._id, message: 'Booking confirmed' });
+    // Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({ bookingId: newBooking._id, message: 'Booking confirmed', order });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    // Rollback transaction
+    await session.abortTransaction();
+    session.endSession();
+
+    // Send error response
+    res.status(500).json({
+      message: 'Due to an error, the booking could not be initiated. Please try again later.',
+      error
+    });
   }
 };
-
 
 exports.getBooking = async (req, res) => {
   try {
@@ -57,8 +103,10 @@ exports.getBookingById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const booking = await Booking.findById(id).populate({path: 'userId', 
-      select: 'email'});
+    const booking = await Booking.findById(id).populate({
+      path: 'userId',
+      select: 'email'
+    });
     if (!booking) {
       return res.status(404).json({ success: false, message: "Booking not found" });
     }
