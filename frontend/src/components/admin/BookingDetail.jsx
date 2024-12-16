@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 
 export default function BookingDetails() {
   const { id } = useParams();
@@ -23,7 +24,17 @@ export default function BookingDetails() {
   }
 
   return (
-    <div className="p-8 bg-gray-100">
+    <div className="flex">
+    {/* Sidebar */}
+    <Sidebar />
+
+    {/* Main Content */}
+    <div className="flex-1 p-8 bg-gray-100">
+      <h1 className="text-3xl font-bold">Tickets</h1>
+      <p className="mt-4 mb-6">Manage your tickets here.</p>
+
+
+      <div className="p-8 bg-gray-100">
       <h1 className="text-3xl font-bold">Booking Details</h1>
       <p><strong>Booking ID:</strong> {booking._id}</p>
       <p><strong>Email:</strong> {booking.userId.email}</p>
@@ -37,5 +48,13 @@ export default function BookingDetails() {
       <p><strong>Payment Amount:</strong> {booking.paymentAmount}</p>
       <p><strong>Transaction ID:</strong> {booking.transactionId}</p> */}
     </div>
+
+    </div>
+  </div>
+
+
+
+
+ 
   );
 }
