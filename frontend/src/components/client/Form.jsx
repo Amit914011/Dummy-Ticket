@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function Form({ setData }) {
-  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedOption, setSelectedOption] = useState("Flight");
   const [flightType, setFlightType] = useState("One Way");
   const [routes, setRoutes] = useState([
@@ -112,11 +109,11 @@ export default function Form({ setData }) {
 
   return (
     <>
-      <div className="w-[80%] max-w-[600px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">
+      <div className="md:w-[100%] w-full max-w-[700px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">
         <div className="text-white flex gap-4 mb-6 bg-[#EFEFEF] items-center justify-center rounded py-1 px-2">
           <button
             onClick={() => setSelectedOption("Flight")}
-            className={`rounded border px-6 py-2 transition duration-300 uppercase ${
+            className={`rounded text-sm px-2 md:text-md border md:px-6 py-2 transition duration-300 uppercase ${
               selectedOption === "Flight"
                 ? "bg-[#32B57A]"
                 : "border-white hover:bg-[#32B57A] bg-white text-black"
@@ -126,7 +123,7 @@ export default function Form({ setData }) {
           </button>
           <button
             onClick={() => setSelectedOption("Hotel")}
-            className={`rounded border px-6 py-2 transition duration-300 uppercase ${
+            className={`rounded text-sm px-2 md:text-md border md:px-6 py-2 transition duration-300 uppercase ${
               selectedOption === "Hotel"
                 ? "bg-[#32B57A]"
                 : "border-white hover:bg-[#32B57A] bg-white text-black"
@@ -136,7 +133,7 @@ export default function Form({ setData }) {
           </button>
           <button
             onClick={() => setSelectedOption("Both")}
-            className={`rounded border px-6 py-2 transition duration-300 ${
+            className={`rounded border text-sm px-2 md:text-md md:px-6 py-2 transition duration-300 ${
               selectedOption === "Both"
                 ? "bg-[#32B57A]"
                 : "border-white hover:bg-[#32B57A] bg-white text-black"
@@ -292,7 +289,7 @@ export default function Form({ setData }) {
                       <input
   type="date"
   id={`departure-${index}`}
-  value={route.departure || new Date().toISOString().slice(0, 10)} // Set default to today's date
+  value={route.departure} // Set default to today's date
   onChange={(e) => handleRouteChange(index, 'departure', e.target.value)}
   min={new Date().toISOString().slice(0, 10)}
   className={`w-full px-4 py-2 border text-black ${
@@ -316,7 +313,7 @@ export default function Form({ setData }) {
                         <input
   type="date"
   id={`return-${index}`}
-  value={route.return || new Date().toISOString().slice(0, 10)}
+  value={route.return}
   onChange={(e) => handleRouteChange(index, "return", e.target.value)}
   min={route.departure || new Date().toISOString().slice(0, 10)} // Ensure return is after departure
   className={`w-full px-4 py-2 border ${
