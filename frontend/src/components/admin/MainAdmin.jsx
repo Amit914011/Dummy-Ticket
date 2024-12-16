@@ -67,11 +67,11 @@ export default function Ticket() {
      </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 bg-gray-100">
+      <div className="flex-1 p-8 h-screen overflow-auto bg-gray-100">
         <h1 className="text-3xl font-bold">Pending Bookings</h1>
 
         {/* Booking List */}
-        <div className="mt-4">
+        <div className="mt-4 ">
           {bookings.map((booking) => (
             <div
               key={booking._id}

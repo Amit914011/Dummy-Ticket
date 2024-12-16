@@ -32,7 +32,7 @@ export default function Sidebar() {
 
 
   return (
-    <div className={` bg-gray-800 text-white  ${isCollapsed ? "w-16" : "w-64"} h-screen transition-all  top-0 duration-300`}>
+    <div className={` bg-[#1f9761] text-white  ${isCollapsed ? "w-16" : "w-64"} h-screen transition-all  top-0 duration-300`}>
       {/* Hamburger Menu */}
       <button
         onClick={toggleSidebar}
@@ -42,12 +42,15 @@ export default function Sidebar() {
       </button>
 
       {/* Menu Items */}
+      {/* Menu Items */}
       <ul className="flex flex-col space-y-2">
         {menuItems.map((item, index) => (
-          <li key={index} className="block items-center w-full" onClick={() => handleLogout(item)}>
+          <li key={index} className="block items-center w-full border-b" onClick={() => handleLogout(item)}>
             <Link
               to={item.link}
-              className="flex items-center space-x-4 hover:bg-gray-700 p-2 rounded-md"
+              className={`flex items-center space-x-4 hover:bg-gray-700 p-2  ${
+                item.label === "Logout" ? "text-red-500 hover:bg-red-600 hover:text-white" : ""
+              }`}
             >
               <span className="md:text-xl">{item.icon}</span>
               {!isCollapsed && <p className="text-sm w-full block">{item.label}</p>}

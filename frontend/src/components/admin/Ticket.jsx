@@ -59,7 +59,7 @@ export default function Ticket() {
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 p-8 bg-gray-100">
+      <div className="flex-1 p-8 bg-gray-100 h-screen overflow-auto">
         <h1 className="text-3xl font-bold">Tickets</h1>
         <p className="mt-4 mb-6">Manage your tickets here.</p>
 
