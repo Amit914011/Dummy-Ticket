@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"
 
 export default function CustomerDetails({ itemData }) {
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -10,6 +11,10 @@ export default function CustomerDetails({ itemData }) {
   ]);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("passenger");
+  const [amount, setAmount] = useState(69);
+  const navigate = useNavigate();
+  // Get Data API Here
+  let [data, setData] = useState([itemData]);
 
   const countryCodes = [
     { country: "United States", code: "+1" },
@@ -108,39 +113,6 @@ export default function CustomerDetails({ itemData }) {
   const handleSubmitData = async (e) => {
     e.preventDefault();
 
-
-    //   {
-    //     "email"  : "shashanksharma1235999@gmail.com",
-    //     "phone" : 8112357010,
-    //     "flightDetails" : [
-    //         {
-    //             "from": "Lucknow",
-    //             "to": "Kanpur",
-    //             "departureDate": "15/12/2024",
-    //             "type": "oneway"
-    //         }
-    //     ],
-    //      "passengerDetails": [
-    //         {
-    //         "firstName": "Anmol",
-    //         "lastName": "Sagar",
-    //         "dob": "05/06/1999",
-    //         "natinality": "Indian"
-    //     }
-    //     ],
-    //     "bookingType" : "hotel",
-    //      "delivery": {
-    //         "purpose": "Roaming",
-    //         "message": "Hey i am here ",
-    //         "delivery": "now"
-
-    //     },
-    //     "paymentAmount" : 2000,
-    //     "transactionId" : "payment12345"
-    // }
-    // Handle form submission logic here
-
-
     let payload = {
       email: email,
       phone: phone,
@@ -148,28 +120,94 @@ export default function CustomerDetails({ itemData }) {
         {
           from: itemData?.routes[0].from,
           to: itemData?.routes[0].to,
-
-          type: itemData?.flightType
-        }
+          type: itemData?.flightType,
+        },
       ],
       passengerDetails: passengers,
       bookingType: itemData.selectedOption?.toLowerCase(),
       delivery: formData,
-      paymentAmount: 200,
-      transactionId: "id for transaction"
-    }
+      paymentAmount: amount,
+    };
 
-    await axios.post('http://localhost:2001/book', payload).then((res) => {
-      alert("Done booking")
-    }).catch((err) => {
-      console.log(err);
-    })
+    // Step 1: Post the booking data
+    axios.post('http://localhost:2001/book', payload)
+      .then((res) => {
+        console.log(res, "response");
+        console.log(res?.data?.orderId?.id, "res.orderId?.id");
+
+        // Step 2: Set up Razorpay options
+        const options = {
+          key: "rzp_live_DJ3aueV0Jcg2xr", // Replace with your RazorPay Key ID
+          amount: amount,
+          currency: "INR",
+          name: "Support My Travel",
+          description: `For visa application/immigration/proof of return/passport renewal/visa extension.
+                       We Offer Genuine Dummy Ticket At A Reasonable Price Within 60 Minutes.`,
+          order_id: res?.data?.orderId?.id,
+          handler: (response) => {
+
+
+            alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`);
+
+            navigate('/')
+          },
+          prefill: {
+            name: "Hemant",
+            email: "hemant@example.com",
+            contact: "6239484624",
+          },
+          theme: {
+            color: "#32B57A",
+          },
+          // Step 3: Handle modal dismissal
+          modal: {
+            ondismiss: () => {
+            
+
+              // Step 4: Call delete API
+              axios.delete(`http://localhost:2001/book/${res?.data?.orderId?.id}`)
+                .then(() => {
+                  alert("Booking deleted successfully.");
+                })
+                .catch((deleteErr) => {
+                  console.error("Error deleting booking:", deleteErr);
+                  alert("Failed to delete booking. Please contact support.");
+                });
+            },
+          },
+        };
+
+        // Step 5: Handle payment failure
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.on("payment.failed", (response) => {
+          // console.log("Payment failed:", response.error);
+          // alert(`Payment failed: ${response.error.description}`);
+
+          // Call delete API if payment fails
+          axios.delete(`http://localhost:2001/book/${res?.data?.orderId?.id}`)
+            .then((res) => {
+              console.log(res);
+              // alert("Booking deleted successfully.");
+            })
+            .catch((deleteErr) => {
+              console.error("Error deleting booking:", deleteErr);
+              alert("Failed to delete booking. Please contact support.");
+            });
+        });
+
+        paymentObject.open();
+      })
+      .catch((err) => {
+        console.error("Error creating booking:", err);
+        alert("An error occurred while processing your booking. Please try again later.");
+      });
   };
 
 
 
-  // Get Data API Here
-  let [data, setData] = useState([itemData]);
+
+
+
 
 
 
@@ -581,7 +619,7 @@ export default function CustomerDetails({ itemData }) {
                 }
                 {/* Hotel data */}
                 {
-                  items.hotels &&
+                  items?.hotels &&
                   <>
                     {
                       items.hotels.map((items, index) => (
