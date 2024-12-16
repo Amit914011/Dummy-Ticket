@@ -48,19 +48,33 @@ export default function Form({ setData }) {
   };
 
 
-  const validateForm = () => {
-    let formErrors = {};
+  const showToastError = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
   
+  const validateForm = () => {
     // Flight and Hotel validations
     if (selectedOption === "Flight" || selectedOption === "Both") {
       for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
+        
+        // Validate route fields
         if (!route.from || !route.to || !route.departure) {
-          formErrors[`route${i}`] = "This field is required";
+          showToastError(`Route ${i + 1}: This field is required.`);
+          return false; // Return false after showing the error
         }
+  
+        // Validate return date for round trips
         if (flightType === "Round Trip" && !route.return) {
-          formErrors[`route${i}Return`] =
-            "Return date is required for Round Trip";
+          showToastError(`Route ${i + 1}: Return date is required for Round Trip.`);
+          return false;
         }
       }
     }
@@ -68,25 +82,13 @@ export default function Form({ setData }) {
     if (selectedOption === "Hotel" || selectedOption === "Both") {
       for (let i = 0; i < hotels.length; i++) {
         const hotel = hotels[i];
+        
+        // Validate hotel fields
         if (!hotel.city || !hotel.checkin || !hotel.checkout) {
-          formErrors[`hotel${i}`] = "This field is required";
+          showToastError(`Hotel ${i + 1}: This field is required.`);
+          return false; // Return false after showing the error
         }
       }
-    }
-  
-    // setErrors(formErrors);
-  
-    // Display a toast error if there are validation errors
-    if (Object.keys(formErrors).length > 0) {
-      toast.error("Please fill all required fields correctly.", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      return false;
     }
   
     return true; // If no errors, form is valid
@@ -97,16 +99,16 @@ export default function Form({ setData }) {
   
     // Validate form data
     if (!validateForm()) {
-      return;
+      return; // If validation fails, stop form submission
     }
   
     // Prepare the data object to be sent
     const data = { selectedOption, flightType, routes, hotels };
   
     try {
-      // Use POST request to send data
+      // Simulate a POST request (commented out for now)
       // const response = await axios.post('http://localhost:3500/api/saveTravelData', data);
-  
+      
       // Log the form data after successful submission
       setData(data);
   
@@ -124,6 +126,7 @@ export default function Form({ setData }) {
       });
     }
   };
+  
   return (
     <>
       <div className="md:w-[100%] w-full max-w-[700px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">

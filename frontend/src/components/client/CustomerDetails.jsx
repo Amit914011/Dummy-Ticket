@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify";
 
+
+
 export default function CustomerDetails({ itemData }) {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [phone, setPhone] = useState("");
@@ -13,6 +15,17 @@ export default function CustomerDetails({ itemData }) {
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("passenger");
   const [amount, setAmount] = useState(69);
+
+    // next form data
+
+    const [formData, setFormData] = useState({
+      receivingtime: "",
+      purpose: "",
+      message: "",
+    });
+
+    
+    
   const navigate = useNavigate();
   // Get Data API Here
   let [data, setData] = useState([itemData]);
@@ -49,78 +62,93 @@ export default function CustomerDetails({ itemData }) {
     );
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+  const showToastError = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
   
+
+  const validateForm = () => {
     // Validate contact details
-    if (!selectedCountry) newErrors.selectedCountry = "Country is required.";
-    if (!phone) newErrors.phone = "Phone number is required.";
-    if (!email) newErrors.email = "Email is required.";
+    if (!selectedCountry) {
+      showToastError("Country is required.");
+      return false;
+    } else if (!phone) {
+      showToastError("Phone number is required.");
+      return false;
+    } else if (!email) {
+      showToastError("Email is required.");
+      return false;
+    }
   
     // Validate passenger details
-    passengers.forEach((passenger, index) => {
-      if (!passenger.title) newErrors[`title-${index}`] = "Title is required.";
-      if (!passenger.firstName) newErrors[`firstName-${index}`] = "First name is required.";
-      if (!passenger.lastName) newErrors[`lastName-${index}`] = "Last name is required.";
-      if (!passenger.dob) newErrors[`dob-${index}`] = "Date of birth is required.";
-      if (!passenger.nationality) newErrors[`nationality-${index}`] = "Nationality is required.";
-    });
-  
-    // Update errors state
-    // setErrors(newErrors); // Make sure setErrors is defined to update the state of errors
-    
-     // Check if there are any validation errors
-  if (Object.keys(newErrors).length > 0) {
-    Object.values(newErrors).forEach((error) => {
-      toast.error(error, {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-    });
-    return false;
+    for (let i = 0; i < passengers.length; i++) {
+      const passenger = passengers[i];
+      if (!passenger.title) {
+        showToastError(`Passenger ${i + 1}: Title is required.`);
+        return false;
+      } else if (!passenger.firstName) {
+        showToastError(`Passenger ${i + 1}: First name is required.`);
+        return false;
+      } else if (!passenger.lastName) {
+        showToastError(`Passenger ${i + 1}: Last name is required.`);
+        return false;
+      } else if (!passenger.dob) {
+        showToastError(`Passenger ${i + 1}: Date of birth is required.`);
+        return false;
+      } else if (!passenger.nationality) {
+        showToastError(`Passenger ${i + 1}: Nationality is required.`);
+        return false;
       }
+    }
   
-    // Return true if no errors
+    // No errors
     return true;
   };
   
-  const validateForm2 = () => {
-    const newErrors = {};
   
+  const validateForm2 = () => {
     // Validate receiving time
-    if (!formData.receivingtime) newErrors.receivingtime = "Receiving time is required.";
+    if (!formData.receivingtime) {
+      showToastError("Receiving time is required.");
+      return false;
+    }
   
     // Validate delivery date if "Receive Later" is selected
     if (formData.receivingtime === "later" && !formData.deliveryDate) {
-      newErrors.deliveryDate = "Delivery date is required.";
+      showToastError("Delivery date is required.");
+      return false;
     }
   
     // Validate purpose
-    if (!formData.purpose) newErrors.purpose = "Purpose is required.";
-  
-    // Validate additional message
-    if (!formData.message) newErrors.message = "Additional message is required.";
-  
-    // Update errors state
-    setErrors(newErrors);
-  
-    // Check if there are any errors
-    if (Object.keys(newErrors).length > 0) {
-      return false; // Return false if there are errors
+    if (!formData.purpose) {
+      showToastError("Purpose is required.");
+      return false;
     }
   
-    return true; // Return true if no errors
+    // Validate additional message
+    if (!formData.message) {
+      showToastError("Additional message is required.");
+      return false;
+    }
+  
+    // No errors
+    return false;
   };
+  
 
   
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      setActiveTab("additional");
       const formData = {
         country: selectedCountry,
         phone,
@@ -131,19 +159,9 @@ export default function CustomerDetails({ itemData }) {
     }
   };
 
-  const handleNext = () => {
-    if (validateForm()) {
-      setActiveTab("additional");
-    }
-  };
+ 
 
-  // next form data
 
-  const [formData, setFormData] = useState({
-    receivingtime: "",
-    purpose: "",
-    message: "",
-  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -155,6 +173,10 @@ export default function CustomerDetails({ itemData }) {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
+
+    if(validateForm2()){
+      return true
+    }
 
     let payload = {
       email: email,
@@ -483,7 +505,7 @@ export default function CustomerDetails({ itemData }) {
 
               <button
                 type="submit"
-                onClick={handleNext}
+                // onClick={handleNext}
                 className="mt-6 py-2 px-6 bg-[#32B57A] text-white rounded-md"
               >
                 Next
