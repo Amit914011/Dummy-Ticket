@@ -254,7 +254,7 @@ const Hero = ({setData}) => {
             We Offer Genuine Dummy Ticket At A Reasonable Price Within 60
             Minutes.
           </p>
-          <button className="bg-[#32B57A] text-white text-xl font-semibold px-6 py-3 rounded-md hover:bg-blue-100 transition duration-300">
+          <button className="bg-[#32B57A] text-white text-xl font-semibold px-6 py-3 rounded-md transition duration-300">
             Buy Dummy Ticket
           </button>
         </div>

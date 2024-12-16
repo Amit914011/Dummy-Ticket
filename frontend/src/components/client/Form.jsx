@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "react-datepicker/dist/react-datepicker.css";
+import { toast } from 'react-toastify'
+
 
 export default function Form({ setData }) {
   const [selectedOption, setSelectedOption] = useState("Flight");
@@ -46,9 +47,10 @@ export default function Form({ setData }) {
     setHotels(updatedHotels);
   };
 
+
   const validateForm = () => {
     let formErrors = {};
-
+  
     // Flight and Hotel validations
     if (selectedOption === "Flight" || selectedOption === "Both") {
       for (let i = 0; i < routes.length; i++) {
@@ -62,7 +64,7 @@ export default function Form({ setData }) {
         }
       }
     }
-
+  
     if (selectedOption === "Hotel" || selectedOption === "Both") {
       for (let i = 0; i < hotels.length; i++) {
         const hotel = hotels[i];
@@ -71,42 +73,57 @@ export default function Form({ setData }) {
         }
       }
     }
-
-    setErrors(formErrors);
-
-    return Object.keys(formErrors).length === 0; // If no errors, form is valid
+  
+    // setErrors(formErrors);
+  
+    // Display a toast error if there are validation errors
+    if (Object.keys(formErrors).length > 0) {
+      toast.error("Please fill all required fields correctly.", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return false;
+    }
+  
+    return true; // If no errors, form is valid
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validate form data
     if (!validateForm()) {
-      // Optionally show a message or handle the invalid form scenario
-      alert("Please fill all required fields correctly.");
       return;
     }
-
+  
     // Prepare the data object to be sent
     const data = { selectedOption, flightType, routes, hotels };
-
+  
     try {
       // Use POST request to send data
-      // const response = await axios.post('http://localhost:3500/api/saveTravelData', data, {
-
-      // });
-
+      // const response = await axios.post('http://localhost:3500/api/saveTravelData', data);
+  
       // Log the form data after successful submission
       setData(data);
-
-      // Redirect to the next page (for example, /customerdetails)
+  
+      // Show success toast and navigate to the next page
+      toast.success("Form submitted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       navigate("/customerdetails"); // Adjust the route as per your application
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("There was an error submitting the form!");
+      toast.error("There was an error submitting the form!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
-
   return (
     <>
       <div className="md:w-[100%] w-full max-w-[700px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify";
 
 export default function CustomerDetails({ itemData }) {
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -50,30 +51,72 @@ export default function CustomerDetails({ itemData }) {
 
   const validateForm = () => {
     const newErrors = {};
-
+  
     // Validate contact details
     if (!selectedCountry) newErrors.selectedCountry = "Country is required.";
     if (!phone) newErrors.phone = "Phone number is required.";
     if (!email) newErrors.email = "Email is required.";
-
+  
     // Validate passenger details
     passengers.forEach((passenger, index) => {
       if (!passenger.title) newErrors[`title-${index}`] = "Title is required.";
-      if (!passenger.firstName)
-        newErrors[`firstName-${index}`] = "First name is required.";
-      if (!passenger.lastName)
-        newErrors[`lastName-${index}`] = "Last name is required.";
-      if (!passenger.dob)
-        newErrors[`dob-${index}`] = "Date of birth is required.";
-      if (!passenger.nationality)
-        newErrors[`nationality-${index}`] = "Nationality is required.";
+      if (!passenger.firstName) newErrors[`firstName-${index}`] = "First name is required.";
+      if (!passenger.lastName) newErrors[`lastName-${index}`] = "Last name is required.";
+      if (!passenger.dob) newErrors[`dob-${index}`] = "Date of birth is required.";
+      if (!passenger.nationality) newErrors[`nationality-${index}`] = "Nationality is required.";
     });
-
-    setErrors(newErrors);
-
+  
+    // Update errors state
+    // setErrors(newErrors); // Make sure setErrors is defined to update the state of errors
+    
+     // Check if there are any validation errors
+  if (Object.keys(newErrors).length > 0) {
+    Object.values(newErrors).forEach((error) => {
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    });
+    return false;
+      }
+  
     // Return true if no errors
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
+  
+  const validateForm2 = () => {
+    const newErrors = {};
+  
+    // Validate receiving time
+    if (!formData.receivingtime) newErrors.receivingtime = "Receiving time is required.";
+  
+    // Validate delivery date if "Receive Later" is selected
+    if (formData.receivingtime === "later" && !formData.deliveryDate) {
+      newErrors.deliveryDate = "Delivery date is required.";
+    }
+  
+    // Validate purpose
+    if (!formData.purpose) newErrors.purpose = "Purpose is required.";
+  
+    // Validate additional message
+    if (!formData.message) newErrors.message = "Additional message is required.";
+  
+    // Update errors state
+    setErrors(newErrors);
+  
+    // Check if there are any errors
+    if (Object.keys(newErrors).length > 0) {
+      return false; // Return false if there are errors
+    }
+  
+    return true; // Return true if no errors
+  };
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();

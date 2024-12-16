@@ -33,6 +33,7 @@ export default function PrivateRoute() {
     <>
       {/* Public routes */}
       <Routes>
+        
         <Route index path='/' element={<Hero setData={setData} />} />
         <Route path="contactus" element={<ContactUs />} />
         <Route path="aboutus" element={<AboutUs />} />
