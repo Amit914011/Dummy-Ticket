@@ -2,24 +2,30 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"
 import { ChangePassword } from "../../services/api.service";
+import Loader from "./Loader";
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const navigate =useNavigate()
+  const [loading,setLoading]=useState(false)
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true)
     // Mock email validation
     if (!email) {
-      setMessage("Please enter your email address.");
+      // setMessage("Please enter your email address.");
+      toast.error("Please enter your email address.")
+      setLoading(false)
       return;
     }
-
+    
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setMessage("Please enter a valid email address.");
+      // setMessage("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.")
       return;
     }
 
@@ -29,6 +35,7 @@ const ForgotPassword = () => {
       }
     }).catch((err) => {
       console.log(err);
+      setLoading(false)
     })
 
 
@@ -64,7 +71,7 @@ const ForgotPassword = () => {
             type="submit"
             className="w-full background text-white py-2 rounded-md  focus:outline-none"
           >
-            Send Reset Link
+            {loading ? <Loader color="white" size="7"  />:"Send Reset Link"}
           </button>
         </form>
 

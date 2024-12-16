@@ -27,6 +27,9 @@ export default function BookingDetails() {
       <h1 className="text-3xl font-bold">Booking Details</h1>
       <p><strong>Booking ID:</strong> {booking._id}</p>
       <p><strong>Email:</strong> {booking.userId.email}</p>
+
+
+      
       {/* <p><strong>Status:</strong> {booking.status}</p>
       <p><strong>Flight Details:</strong> {booking.flightDetails}</p>
       <p><strong>Hotel Details:</strong> {booking.hotelDetails}</p>

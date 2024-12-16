@@ -60,9 +60,11 @@ export default function Ticket() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex relative">
       {/* Sidebar */}
-      <Sidebar />
+     <div className="">
+     <Sidebar />
+     </div>
 
       {/* Main Content */}
       <div className="flex-1 p-8 bg-gray-100">

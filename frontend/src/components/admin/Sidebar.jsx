@@ -32,7 +32,7 @@ export default function Sidebar() {
 
 
   return (
-    <div className={` bg-gray-800 text-white ${isCollapsed ? "w-16" : "w-64"} h-screen transition-all duration-300`}>
+    <div className={` bg-gray-800 text-white  ${isCollapsed ? "w-16" : "w-64"} h-screen transition-all duration-300`}>
       {/* Hamburger Menu */}
       <button
         onClick={toggleSidebar}

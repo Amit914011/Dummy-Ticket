@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 
 
@@ -14,8 +15,8 @@ export default function CustomerDetails({ itemData }) {
   ]);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("passenger");
-  const [amount, setAmount] = useState(69);
-
+  const [amount, setAmount] = useState(1);
+  const [loading, setLoading] = useState(false);
     // next form data
 
     const [formData, setFormData] = useState({
@@ -75,6 +76,7 @@ export default function CustomerDetails({ itemData }) {
   
 
   const validateForm = () => {
+    
     // Validate contact details
     if (!selectedCountry) {
       showToastError("Country is required.");
@@ -117,24 +119,28 @@ export default function CustomerDetails({ itemData }) {
     // Validate receiving time
     if (!formData.receivingtime) {
       showToastError("Receiving time is required.");
+      setLoading(false)
       return false;
     }
   
     // Validate delivery date if "Receive Later" is selected
     if (formData.receivingtime === "later" && !formData.deliveryDate) {
       showToastError("Delivery date is required.");
+      setLoading(false)
       return false;
     }
   
     // Validate purpose
     if (!formData.purpose) {
       showToastError("Purpose is required.");
+      setLoading(false)
       return false;
     }
   
     // Validate additional message
     if (!formData.message) {
       showToastError("Additional message is required.");
+      setLoading(false)
       return false;
     }
   
@@ -173,7 +179,7 @@ export default function CustomerDetails({ itemData }) {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if(validateForm2()){
       return true
     }
@@ -264,6 +270,7 @@ export default function CustomerDetails({ itemData }) {
       })
       .catch((err) => {
         console.error("Error creating booking:", err);
+        setLoading(false);
         alert("An error occurred while processing your booking. Please try again later.");
       });
   };
@@ -507,8 +514,10 @@ export default function CustomerDetails({ itemData }) {
                 type="submit"
                 // onClick={handleNext}
                 className="mt-6 py-2 px-6 bg-[#32B57A] text-white rounded-md"
+                disabled={loading}
               >
-                Next
+                
+                {loading ? <Loader color="white" size="10" /> : "Next"}
               </button>
             </form>
           )}
@@ -634,8 +643,10 @@ export default function CustomerDetails({ itemData }) {
                   <button
                     type="submit"
                     className="w-full py-2 bg-[#32B57A] text-white font-semibold rounded-md hover:bg-[#2c9d5f]"
+                    disabled={loading}
                   >
-                    Submit
+                      {loading ? <Loader color="white" size="7" /> : "Submit"}
+                    
                   </button>
                 </div>
               </div>

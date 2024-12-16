@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { AiFillEye, AiFillEyeInvisible, AiOutlineUser, AiOutlineLock } from 'react-icons/ai'; // Import icons
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginUser } from '../../services/api.service';
-import axios from "axios"
+import Loader from './Loader';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading,setLoading] = useState(false)
   const navigate =  useNavigate()
 
 
@@ -16,10 +18,14 @@ const Login = () => {
   const validateForm = () => {
     if (!email.includes("@")) {
       setErrorMessage("Please enter a valid email address.");
+      setLoading(false)
+      toast.error("Please enter a valid email address.");
       return false;
     }
     if (password.length < 6) {
       setErrorMessage("Password must be at least 6 characters.");
+      setLoading(false)
+      toast.error("Password must be at least 6 characters."); 
       return false;
     }
     setErrorMessage("");
@@ -27,16 +33,20 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     if (validateForm()) {
 
       await LoginUser({ email, password }).then((res) => {
         if (res.status === 200) {
           localStorage.setItem("token" , res.data.token)
+          toast.success("Login successful!");
           navigate('/ticket')
         }
       }).catch((err) => {
         console.log(err);
+        setLoading(false)
+        toast.error("Login failed! Please check your credentials.");
       })
     }
   };
@@ -49,12 +59,12 @@ const Login = () => {
           <h1 className="text-2xl font-bold uppercase text-[#32B57A]">Check Ticket</h1>
         </div>
 
-        {/* Error Message */}
+        {/* Error Message
         {errorMessage && (
           <div className="mb-4 text-red-500 text-center">
             {errorMessage}
           </div>
-        )}
+        )} */}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
@@ -109,7 +119,9 @@ const Login = () => {
               type="submit"
               className="w-full bg-[#32B57A] text-white px-4 py-2 rounded-md shadow-sm hover:bg-[#32B57A] focus:outline-none focus:ring-2 focus:ring-[#32B57A] focus:ring-offset-2"
             >
-              Check Ticket
+              {loading ? <Loader color="white" size="7" /> : "Check Ticket"}
+             
+              
             </button>
           </div>
         </form>

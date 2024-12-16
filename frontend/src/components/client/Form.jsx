@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify'
-
+import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 export default function Form({ setData }) {
   const [selectedOption, setSelectedOption] = useState("Flight");
   const [flightType, setFlightType] = useState("One Way");
+  const [loading, setLoading] = useState(false);
   const [routes, setRoutes] = useState([
     { from: "", to: "", departure: "", return: "" },
   ]);
@@ -47,7 +48,6 @@ export default function Form({ setData }) {
     setHotels(updatedHotels);
   };
 
-
   const showToastError = (message) => {
     toast.error(message, {
       position: "top-right",
@@ -58,65 +58,69 @@ export default function Form({ setData }) {
       draggable: true,
     });
   };
-  
+
   const validateForm = () => {
+    setLoading(true)
     // Flight and Hotel validations
     if (selectedOption === "Flight" || selectedOption === "Both") {
       for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
-        
+
         // Validate route fields
         if (!route.from || !route.to || !route.departure) {
           showToastError(`Route ${i + 1}: This field is required.`);
+          setLoading(false)
           return false; // Return false after showing the error
+          
         }
-  
+
         // Validate return date for round trips
         if (flightType === "Round Trip" && !route.return) {
-          showToastError(`Route ${i + 1}: Return date is required for Round Trip.`);
+          showToastError(
+            `Route ${i + 1}: Return date is required for Round Trip.`
+          );
+          setLoading(false)
           return false;
+          
         }
       }
     }
-  
+
     if (selectedOption === "Hotel" || selectedOption === "Both") {
       for (let i = 0; i < hotels.length; i++) {
         const hotel = hotels[i];
-        
+
         // Validate hotel fields
         if (!hotel.city || !hotel.checkin || !hotel.checkout) {
           showToastError(`Hotel ${i + 1}: This field is required.`);
+          setLoading(false)
           return false; // Return false after showing the error
         }
+        
       }
     }
-  
+    
+    setLoading(false)
     return true; // If no errors, form is valid
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setLoading(true);
     // Validate form data
     if (!validateForm()) {
       return; // If validation fails, stop form submission
     }
-  
+
     // Prepare the data object to be sent
     const data = { selectedOption, flightType, routes, hotels };
-  
+
     try {
       // Simulate a POST request (commented out for now)
       // const response = await axios.post('http://localhost:3500/api/saveTravelData', data);
-      
+
       // Log the form data after successful submission
       setData(data);
-  
-      // Show success toast and navigate to the next page
-      toast.success("Form submitted successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
       navigate("/customerdetails"); // Adjust the route as per your application
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -124,13 +128,14 @@ export default function Form({ setData }) {
         position: "top-right",
         autoClose: 3000,
       });
+      setLoading(false)
     }
   };
-  
+
   return (
     <>
-      <div className="md:w-[100%] w-full max-w-[700px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">
-        <div className="text-white flex gap-4 mb-6 bg-[#EFEFEF] items-center justify-center rounded py-1 px-2">
+      <div className="md:w-[80%] lg:w-[70%] w-full max-w-[700px] h-auto border bg-white border-gray-300 rounded-lg mt-10 m-auto p-8 flex flex-col justify-center items-center shadow-lg">
+        <div className="text-white  flex gap-4 mb-6 bg-[#EFEFEF] items-center justify-center rounded py-1 px-2">
           <button
             onClick={() => setSelectedOption("Flight")}
             className={`rounded text-sm px-2 md:text-md border md:px-6 py-2 transition duration-300 uppercase ${
@@ -175,7 +180,7 @@ export default function Form({ setData }) {
                 onChange={(e) => setFlightType(e.target.value)}
                 className="mr-2"
               />
-              <label htmlFor="optionone" className="text-[#32B57A]">
+              <label htmlFor="optionone" className="text-[#32B57A] text-[12px] md:text-[16px]">
                 One Way
               </label>
             </div>
@@ -189,7 +194,7 @@ export default function Form({ setData }) {
                 onChange={(e) => setFlightType(e.target.value)}
                 className="mr-2"
               />
-              <label htmlFor="optiontwo" className="text-[#32B57A]">
+              <label htmlFor="optiontwo" className="text-[#32B57A] text-[12px] md:text-[16px]">
                 Round Trip
               </label>
             </div>
@@ -203,7 +208,7 @@ export default function Form({ setData }) {
                 onChange={(e) => setFlightType(e.target.value)}
                 className="mr-2"
               />
-              <label htmlFor="optionthree" className="text-[#32B57A]">
+              <label htmlFor="optionthree" className="text-[#32B57A] text-[12px] md:text-[16px]">
                 Multi Trip
               </label>
             </div>
@@ -282,7 +287,7 @@ export default function Form({ setData }) {
                       </p>
                     )}
                   </div>
-                  <div className="flex gap-5">
+                  <div className="md:flex gap-5 ">
                     <div className="w-full">
                       <label
                         htmlFor={`departure-${index}`}
@@ -290,32 +295,21 @@ export default function Form({ setData }) {
                       >
                         Departure
                       </label>
-                      {/* <DatePicker
+                     
+                      <input
+                        type="date"
                         id={`departure-${index}`}
-                        selected={route.departure} // Pass the date object directly
-                        onChange={(date) =>
-                          handleRouteChange(index, "departure", date)
-                        } // Pass the selected date
-                        minDate={new Date()} // Disable past dates
-                        excludeDates={[new Date()]} // Disable specific date (2024-12-14)
+                        value={route.departure} // Set default to today's date
+                        onChange={(e) =>
+                          handleRouteChange(index, "departure", e.target.value)
+                        }
+                        min={new Date().toISOString().slice(0, 10)}
                         className={`w-full px-4 py-2 border text-black ${
                           errors[`route${index}`]
                             ? "border-red-500"
                             : "border-gray-500"
                         } rounded text-[#32B57A] focus:outline-none focus:border-blue-400`}
-                        dateFormat="dd-MM-yyyy" // Optional: Format the displayed date
-                         placeholderText="Select a departure date"
-                      /> */}
-                      <input
-  type="date"
-  id={`departure-${index}`}
-  value={route.departure} // Set default to today's date
-  onChange={(e) => handleRouteChange(index, 'departure', e.target.value)}
-  min={new Date().toISOString().slice(0, 10)}
-  className={`w-full px-4 py-2 border text-black ${
-    errors[`route${index}`] ? 'border-red-500' : 'border-gray-500'
-  } rounded text-[#32B57A] focus:outline-none focus:border-blue-400`}
-/>
+                      />
                       {errors[`route${index}`] && (
                         <p className="text-red-500 text-sm">
                           {errors[`route${index}`]}
@@ -331,15 +325,22 @@ export default function Form({ setData }) {
                           Return
                         </label>
                         <input
-  type="date"
-  id={`return-${index}`}
-  value={route.return}
-  onChange={(e) => handleRouteChange(index, "return", e.target.value)}
-  min={route.departure || new Date().toISOString().slice(0, 10)} // Ensure return is after departure
-  className={`w-full px-4 py-2 border ${
-    errors[`route${index}Return`] ? "border-red-500" : "border-gray-500"
-  } rounded text-black focus:outline-none focus:border-blue-400`}
-/>
+                          type="date"
+                          id={`return-${index}`}
+                          value={route.return}
+                          onChange={(e) =>
+                            handleRouteChange(index, "return", e.target.value)
+                          }
+                          min={
+                            route.departure ||
+                            new Date().toISOString().slice(0, 10)
+                          } // Ensure return is after departure
+                          className={`w-full px-4 py-2 border ${
+                            errors[`route${index}Return`]
+                              ? "border-red-500"
+                              : "border-gray-500"
+                          } rounded text-black focus:outline-none focus:border-blue-400`}
+                        />
                         {errors[`route${index}Return`] && (
                           <p className="text-red-500 text-sm">
                             {errors[`route${index}Return`]}
@@ -405,7 +406,7 @@ export default function Form({ setData }) {
                       </p>
                     )}
                   </div>
-                  <div className="flex gap-5">
+                  <div className="md:flex gap-5">
                     <div className="w-full">
                       <label
                         htmlFor={`checkin-${index}`}
@@ -414,17 +415,19 @@ export default function Form({ setData }) {
                         Check-in
                       </label>
                       <input
-  type="date"
-  id={`checkin-${index}`}
-  value={hotel.checkin } 
-  onChange={(e) =>
-    handleHotelChange(index, "checkin", e.target.value)
-  }
-  min={new Date().toISOString().slice(0, 10)} // Disable past dates
-  className={`w-full px-4 py-2 border ${
-    errors[`hotel${index}`] ? "border-red-500" : "border-gray-500"
-  } rounded text-black focus:outline-none focus:border-[#32B57A]`}
-/>
+                        type="date"
+                        id={`checkin-${index}`}
+                        value={hotel.checkin}
+                        onChange={(e) =>
+                          handleHotelChange(index, "checkin", e.target.value)
+                        }
+                        min={new Date().toISOString().slice(0, 10)} // Disable past dates
+                        className={`w-full px-4 py-2 border ${
+                          errors[`hotel${index}`]
+                            ? "border-red-500"
+                            : "border-gray-500"
+                        } rounded text-black focus:outline-none focus:border-[#32B57A]`}
+                      />
 
                       {errors[`hotel${index}`] && (
                         <p className="text-red-500 text-sm">
@@ -473,8 +476,9 @@ export default function Form({ setData }) {
           <button
             type="submit"
             className="mt-6 w-full py-2 px-4 uppercase bg-[#32B57A] text-white font-semibold rounded "
+            disabled={loading}
           >
-            Get Dummy Ticket
+            {loading ? <Loader color="white" size="7" /> : " Get Dummy Ticket"}
           </button>
         </form>
       </div>
